@@ -1,5 +1,5 @@
 #!/bin/bash
 #
-# Generate Google Cloud credentials.
+# Refresh Google Cloud credentials.
 
 gcloud auth login
