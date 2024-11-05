@@ -5,6 +5,7 @@
 #   Usage:
 #       create_gcp_environment.sh <PROJECT_ID> <ORGANIZATION_ID> <BILLING_ACCOUNT_ID>
 #
+
 PROJECT_ID=$1
 TIMESTAMP="$(date +%s)"
 PROJECT_ID="${PROJECT_ID}-${TIMESTAMP}"
