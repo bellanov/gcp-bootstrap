@@ -1,7 +1,6 @@
 #!/bin/bash
 #
 # Delete a GCP Project and disable its billing.
-#
 
 for PROJECT in $@
 do

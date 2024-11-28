@@ -6,9 +6,9 @@
 #       create_gcp_environment.sh <PROJECT_ID> <ORGANIZATION_ID> <BILLING_ACCOUNT_ID>
 #
 
-PROJECT_ID=$1
+PROJECT_NAME=$1
 TIMESTAMP="$(date +%s)"
-PROJECT_ID="${PROJECT_ID}-${TIMESTAMP}"
+PROJECT_ID="${PROJECT_NAME}-${TIMESTAMP}"
 ORGANIZATION_ID=$2
 BILLING_ACCOUNT=$3
 SERVICE_APIS="Artifact Registry, Cloud Build API, Cloud Resource Manager, Identity & Access Management, Secret Manager API"
@@ -21,7 +21,7 @@ echo "Creating customer environment: $PROJECT_ID"
 echo "Creating project: $PROJECT_ID"
 gcloud projects create ${PROJECT_ID} \
     --organization=${ORGANIZATION_ID} \
-    --name=${PROJECT_ID}
+    --name=${PROJECT_NAME}
 gcloud config set project $PROJECT_ID
 
 echo "Linking billing account: $BILLING_ACCOUNT"

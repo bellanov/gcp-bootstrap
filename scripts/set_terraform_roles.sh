@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # Set the Terraform roles for a GCP Project.
-#
+
 PROJECT_ID=$1
 
 echo "Executing script: $0"
@@ -26,4 +26,3 @@ do
     --member=serviceAccount:terraform@${PROJECT_ID}.iam.gserviceaccount.com \
     --role=${ROLE}
 done
-
