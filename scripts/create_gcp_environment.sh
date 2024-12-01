@@ -15,6 +15,7 @@ SERVICE_APIS="Artifact Registry, Cloud Build API, Cloud Resource Manager, Identi
 APIS="artifactregistry.googleapis.com cloudbuild.googleapis.com cloudresourcemanager.googleapis.com iam.googleapis.com secretmanager.googleapis.com"
 SERVICE_ACCOUNTS="terraform"
 
+set -e  # Exit on error
 
 #######################################
 # Display an error message to STDERR.
