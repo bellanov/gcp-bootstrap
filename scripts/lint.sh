@@ -3,7 +3,7 @@
 # Lint the Codebase.
 #
 #   Usage:
-#       lint.sh
+#     lint.sh
 #
 
 shellcheck scripts/*

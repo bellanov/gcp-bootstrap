@@ -3,7 +3,7 @@
 # Disable Service APIs in a GCP Project.
 #
 #   Usage:
-#       disable_apis.sh <PROJECT_ID>
+#     disable_apis.sh <PROJECT_ID>
 #
 
 PROJECT_ID=$1

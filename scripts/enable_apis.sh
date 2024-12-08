@@ -3,7 +3,7 @@
 # Enable Service APIs in a GCP Project.
 #
 #   Usage:
-#       enable_apis.sh <PROJECT_ID>
+#     enable_apis.sh <PROJECT_ID>
 #
 
 PROJECT_ID=$1
