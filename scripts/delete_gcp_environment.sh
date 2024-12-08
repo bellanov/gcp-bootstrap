@@ -3,7 +3,7 @@
 # Delete a GCP Project and disable its billing.
 #
 #   Usage:
-#       delete_gcp_environment.sh <PROJECT_ID> <PROJECT_ID> <N>
+#     delete_gcp_environment.sh <PROJECT_ID> <PROJECT_ID> <N>
 #
 
 

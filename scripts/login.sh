@@ -3,7 +3,7 @@
 # Refresh Google Cloud credentials.
 #
 #   Usage:
-#       login.sh <PROJECT_ID>
+#     login.sh <PROJECT_ID>
 #
 
 gcloud auth login

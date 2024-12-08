@@ -3,7 +3,7 @@
 # Set the Terraform roles for a GCP Project.
 #
 #   Usage:
-#       set_terraform_roles.sh <PROJECT_ID>
+#     set_terraform_roles.sh <PROJECT_ID>
 #
 
 PROJECT_ID=$1

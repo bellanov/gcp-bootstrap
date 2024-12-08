@@ -19,8 +19,9 @@ Summary of the available scripts and their usage. Details available within each 
 | **create_gcp_environment.sh** | Initialize a new *GCP Project* along with an initial *Terraform* identity. |
 | **delete_gcp_environment.sh** | Delete a GCP Project and disable its billing. |
 | **enable_apis.sh** | Enable Service APIs in a GCP Project. |
-| **login.sh**   | Log in or refresh Google Cloud *credentials* so scripts can be executed. |
-| **set_terraform_roles.sh**   | Set the Terraform roles for a GCP Project. |
+| **login.sh** | Log in or refresh Google Cloud *credentials* so scripts can be executed. |
+| **lint.sh** | Lint the codebase. |
+| **set_terraform_roles.sh** | Set the Terraform roles for a GCP Project. |
 
 ## Examples
 
