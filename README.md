@@ -38,10 +38,16 @@ create_gcp_environment.sh <PROJECT_ID> <ORGANIZATION_ID> <BILLING_ACCOUNT_ID>
 
 scripts/create_gcp_environment.sh test-gcp-scripts "1234567890" "123ABCD-ABC1234-123ABCD"
 Executing script: scripts/create_gcp_environment.sh
-Creating customer environment: test-gcp-scripts-1727577182
-Creating project: test-gcp-scripts-1727577182
-Create in progress for [https://cloudresourcemanager.googleapis.com/v1/projects/test-gcp-scripts-1727577182].
-Waiting for [operations/cp.5032140884809863741] to finish...do
+Creating project: test-1733954758
+Successfully created project: test-1733954758
+Setting active project to: test-1733954758
+Successfully set active project: test-1733954758
+Linking billing account: 0181BD-E8A62D-6B2069
+Successfully linked billing account: 0181BD-E8A62D-6B2069
+Enabling Service APIs: Cloud Resource Manager, Identity & Access Management, Secret Manager API
+Enabling API: cloudresourcemanager.googleapis.com
+Successfully enabled API: cloudresourcemanager.googleapis.com
+...
 ```
 
 ### delete_gcp_environment.sh
