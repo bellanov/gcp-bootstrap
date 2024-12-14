@@ -27,7 +27,7 @@ err() {
 #######################################
 # Validate the arguments and initialize the script.
 # Globals:
-#   PROJECT_IDS
+#   None.
 # Arguments:
 #   None.
 #######################################
@@ -51,13 +51,13 @@ initialize() {
 
 # Parse command line arguments
 while [[ "$#" -gt 0 ]]; do
-    case $1 in
-        -p|--project) project="$2"; shift ;;
-        -n|--name) name="$2"; shift ;;
-        -d|--debug) debug=1 ;;
-        *) echo "Unknown parameter passed: $1"; exit 1 ;;
-    esac
-    shift
+  case $1 in
+      -p|--project) project="$2"; shift ;;
+      -n|--name) name="$2"; shift ;;
+      -d|--debug) debug=1 ;;
+      *) echo "Unknown parameter passed: $1"; exit 1 ;;
+  esac
+  shift
 done
 
 # Initialize Script
