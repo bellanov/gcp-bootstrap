@@ -44,9 +44,9 @@ initialize() {
   fi
 
   # Display validated arguments / parameters
-  echo "GCP Project   : $project"
-  echo "VPC Name      : $name"
-  echo "Verbose       : $verbose"
+  echo "GCP Project  : $project"
+  echo "VPC Name     : $name"
+  echo "Debug        : $debug"
 }
 
 # Parse command line arguments
@@ -54,14 +54,14 @@ while [[ "$#" -gt 0 ]]; do
     case $1 in
         -p|--project) project="$2"; shift ;;
         -n|--name) name="$2"; shift ;;
-        -v|--verbose) verbose=1 ;;
+        -d|--debug) debug=1 ;;
         *) echo "Unknown parameter passed: $1"; exit 1 ;;
     esac
     shift
 done
 
 # Initialize Script
-initialize "$project" "$name" "$verbose"
+initialize "$project" "$name" "$debug"
 
 echo "Executing script: $0"
 echo "GCP project: $project"
