@@ -12,7 +12,7 @@ PROJECT_ID="${PROJECT_NAME}-${TIMESTAMP}"
 ORGANIZATION_ID=$2
 BILLING_ACCOUNT=$3
 SERVICE_APIS="Cloud Resource Manager, Identity & Access Management, Secret Manager API"
-APIS="cloudresourcemanager.googleapis.com compute.googleapis.com iam.googleapis.com"
+APIS="cloudresourcemanager.googleapis.com compute.googleapis.com dns.googleapis.com iam.googleapis.com"
 SERVICE_ACCOUNTS="terraform"
 
 # Exit on error
@@ -119,8 +119,7 @@ do
 done
 
 # Assign the necessary roles to the Terraform user
-ROLES="roles/artifactregistry.admin roles/cloudbuild.builds.editor \
-  roles/owner roles/run.admin roles/storage.admin roles/secretmanager.admin \
+ROLES="roles/artifactregistry.admin roles/owner roles/storage.admin \
   roles/iam.serviceAccountAdmin"
 
 echo "Assigning User Role(s): Terraform User"

@@ -44,7 +44,7 @@ initialize
 echo "Executing script: $0"
 echo "Refreshing Terraform roles: $PROJECT_ID"
 
-EXISTING_ROLES="roles/owner roles/storage.admin roles/iam.serviceAccountAdmin"
+EXISTING_ROLES="roles/owner roles/run.admin roles/storage.admin roles/iam.serviceAccountAdmin"
 
 echo "Removing Existing Role(s): Terraform User"
 for ROLE in $EXISTING_ROLES
