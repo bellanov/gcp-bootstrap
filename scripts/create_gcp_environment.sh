@@ -119,8 +119,7 @@ do
 done
 
 # Assign the necessary roles to the Terraform user
-ROLES="roles/artifactregistry.admin roles/owner roles/storage.admin \
-  roles/iam.serviceAccountAdmin"
+ROLES="roles/owner roles/storage.admin roles/iam.serviceAccountAdmin"
 
 echo "Assigning User Role(s): Terraform User"
 
