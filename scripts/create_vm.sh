@@ -3,13 +3,13 @@
 # Create a Virtual Machine.
 #
 #   Usage:
-#     create_vm.sh --project <PROJECT_ID>
-#     create_vm.sh -p <PROJECT_ID>
+#     create_vm.sh --project <PROJECT_ID> --subnet <SUBNET>
+#     create_vm.sh -p <PROJECT_ID> -s <SUBNET>
 #
 
 # Instance Configuration
-# TODO: Establish instance name dynamically using epoch
-INSTANCE_NAME="instance-20241215-032445"
+TIMESTAMP="$(date +%s)"
+INSTANCE_NAME="instance-${TIMESTAMP}"
 MACHINE_TYPE="e2-micro"
 PROVISIONING_MODEL="SPOT"
 
@@ -54,9 +54,15 @@ initialize() {
     debug="warning"
   fi
 
+  # Validate the Subnet argumeent
+  if [ "$4" = "" ] ; then
+    err "Error: SUBNET not provided or is invalid."
+  fi
+
   # Display validated arguments / parameters
   echo "Project : $1"
   echo "Zone    : $2"
+  echo "Subnet  : $4"
   echo "Debug   : $debug"
 }
 
@@ -64,6 +70,7 @@ initialize() {
 while [[ "$#" -gt 0 ]]; do
   case $1 in
       -p|--project) project="$2"; shift ;;
+      -s|--subnet) subnet="$2"; shift ;;
       -z|--zone) zone="$2"; shift ;;
       -d|--debug) debug=1 ;;
       *) echo "Unknown parameter passed: $1"; exit 1 ;;
@@ -72,7 +79,7 @@ while [[ "$#" -gt 0 ]]; do
 done
 
 # Initialize Script
-initialize "$project" "$zone" "$debug"
+initialize "$project" "$zone" "$debug" "$subnet"
 
 echo "Executing script: $0"
 echo "GCP project: $project"

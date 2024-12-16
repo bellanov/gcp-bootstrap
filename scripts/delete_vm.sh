@@ -52,8 +52,9 @@ initialize() {
   fi
 
   # Display validated arguments / parameters
-  echo "Project : $project"
-  echo "Zone    : $project"
+  echo "Project : $1"
+  echo "Name    : $3"
+  echo "Zone    : $2"
   echo "Debug   : $debug"
 }
 
@@ -75,6 +76,6 @@ initialize "$project" "$zone" "$name" "$debug"
 echo "Executing script: $0"
 echo "GCP project: $project"
 
-# Create the Virtual Machines
+# Delete the Virtual Machine
 gcloud compute instances delete "${name}" --project="${project}" \
   --zone="${zone}" --quiet
