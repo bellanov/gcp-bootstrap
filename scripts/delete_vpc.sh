@@ -57,8 +57,8 @@ initialize() {
   fi
 
   # Display validated arguments / parameters
-  echo "GCP Project     : $1"
-  echo "VPC Name        : $2"
+  echo "Project         : $1"
+  echo "VPC             : $2"
   echo "Subnets         : $3"
   echo "Firewall Rules  : $4"
   echo "Region          : $5"

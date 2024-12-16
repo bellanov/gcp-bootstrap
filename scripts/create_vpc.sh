@@ -44,9 +44,9 @@ initialize() {
   fi
 
   # Display validated arguments / parameters
-  echo "GCP Project  : $project"
-  echo "VPC Name     : $name"
-  echo "Debug        : $debug"
+  echo "Project : $project"
+  echo "VPC     : $name"
+  echo "Debug   : $debug"
 }
 
 # Parse command line arguments
