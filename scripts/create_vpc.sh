@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Create a VPC in a GCP Project.
+# Create a VPC.
 #
 #   Usage:
 #     create_vpc.sh --name <VPC_NAME> --project <PROJECT_ID>
@@ -88,3 +88,7 @@ gcloud compute firewall-rules create "${name}"-allow-icmp --project="${project}"
     --network=projects/"${project}"/global/networks/"${name}" \
     --description=Allows\ ICMP\ connections\ from\ any\ source\ to\ any\ instance\ on\ the\ network. \
     --direction=INGRESS --priority=65534 --source-ranges=0.0.0.0/0 --action=ALLOW --rules=icmp
+
+gcloud compute firewall-rules create "${name}"-allow-ssh --project="${project}" \
+  --direction=INGRESS --priority=1000 --network=demo-vpc-1 --action=ALLOW --rules=tcp:22 \
+  --source-ranges=0.0.0.0/0
