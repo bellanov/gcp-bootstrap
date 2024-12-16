@@ -85,7 +85,7 @@ echo "Executing script: $0"
 echo "GCP project: $project"
 
 # Create the Virtual Machines
-gcloud compute instances create ${INSTANCE_NAME} --project="${project}" \
+gcloud compute instances create "${INSTANCE_NAME}" --project="${project}" \
   --zone="${zone}" --machine-type=${MACHINE_TYPE} \
   --network-interface=network-tier=PREMIUM,stack-type=IPV4_ONLY,subnet=subnet-1 \
   --no-restart-on-failure --maintenance-policy=TERMINATE \

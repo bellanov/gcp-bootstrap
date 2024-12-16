@@ -7,9 +7,6 @@
 #     delete_vm.sh -n <INSTANCE_NAME> -p <PROJECT_ID> -z <ZONE>
 #
 
-# TODO: Establish instance name dynamically using epoch
-INSTANCE_NAME="instance-20241215-032445"
-
 # Exit on error
 set -e
 
