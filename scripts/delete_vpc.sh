@@ -3,8 +3,8 @@
 # Delete a VPC.
 #
 #   Usage:
-#     delete_vpc.sh --name <VPC_NAME> --project <PROJECT_ID> --subnets <SUBNETS> --region <REGION>
-#     delete_vpc.sh -n <VPC_NAME> -p <PROJECT_ID> -s <SUBNETS> -r <REGION>
+#     delete_vpc.sh --name <VPC_NAME> --rules <FIREWALL_RULES> --project <PROJECT_ID>
+#     delete_vpc.sh -n <VPC_NAME> -r <FIREWALL_RULES> -p <PROJECT_ID>
 #
 
 # Exit on error
@@ -41,28 +41,16 @@ initialize() {
     err "Error: VPC_NAME not provided or is invalid."
   fi
 
-  # Validate the Subnets argument
-  if [ "$3" = "" ] ; then
-    err "Error: SUBNETS not provided or is invalid."
-  fi
-
-  # Validate the Region argument
-  if [ "$4" = "" ] ; then
-    err "Error: REGION not provided or is invalid."
-  fi
-
   # Validate the Firewall Rules argument
-  if [ "$5" = "" ] ; then
+  if [ "$3" = "" ] ; then
     err "Error: FIREWALL_RULES not provided or is invalid."
   fi
 
   # Display validated arguments / parameters
   echo "Project         : $1"
   echo "VPC             : $2"
-  echo "Subnets         : $3"
-  echo "Firewall Rules  : $4"
-  echo "Region          : $5"
-  echo "Debug           : $6"
+  echo "Firewall Rules  : $3"
+  echo "Debug           : $4"
 }
 
 # Parse command line arguments
@@ -70,9 +58,7 @@ while [[ "$#" -gt 0 ]]; do
   case $1 in
       -p|--project) project="$2"; shift ;;
       -n|--name) name="$2"; shift ;;
-      -s|--subnets) subnets="$2"; shift ;;
-      -r|--region) region="$2"; shift ;;
-      -fwr|--firewall-rules) rules="$2"; shift ;;
+      -r|--rules) rules="$2"; shift ;;
       -d|--debug) debug=1 ;;
       *) echo "Unknown parameter passed: $1"; exit 1 ;;
   esac
@@ -80,32 +66,20 @@ while [[ "$#" -gt 0 ]]; do
 done
 
 # Initialize Script
-initialize "$project" "$name" "$subnets" "$region" "$rules" "$debug"
+initialize "$project" "$name" "$rules" "$debug"
 
 echo "Executing script: $0"
 echo "GCP project: $project"
-
-# Delete the Subnets
-for subnet in $subnets
-do
-  echo "Deleting subnet: ${subnet}"
-  if gcloud compute networks subnets delete "${subnet}" \
-  --project="${project}" --region="${region}" --quiet >/dev/null 2>&1; then
-    echo "Successfully deleted subnet: ${subnet}"
-  else
-    err "Error: Failed to delete subnet: ${subnet}"
-  fi
-done
 
 # Delete the Firewall Rules
 for rule in $rules
 do
   echo "Deleting firewall rule: ${rule}"
-  if gcloud compute firewall-rules delete "${rule}" --project="${project}" \
+  if gcloud compute firewall-rules delete "${name}-${rule}" --project="${project}" \
     --quiet >/dev/null 2>&1; then
-    echo "Successfully deleted firewall rule: ${rule}"
+    echo "Successfully deleted firewall rule: ${name}-${rule}"
   else
-    err "Error: Failed to delete firewall rule: ${rule}"
+    err "Error: Failed to delete firewall rule: ${name}-${rule}"
   fi
 done
 

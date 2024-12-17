@@ -16,8 +16,16 @@ Summary of the available scripts and their usage. Details available within each 
 
 | Script      | Description |
 | ----------- | ----------- |
+| **args.sh** | Example of how to process command line arguments in BASH. |
 | **create_gcp_environment.sh** | Initialize a new *GCP Project* along with an initial *Terraform* identity. |
+| **create_subnet.sh** | Create a Subnet within a VPC. |
+| **create_vm.sh** | Create a VM within a Subnet. |
+| **create_vpc.sh** | Create a VPC to isolate network resources. |
 | **delete_gcp_environment.sh** | Delete a GCP Project and disable its billing. |
+| **delete_subnet.sh** | Delete a Subnet. |
+| **delete_vm.sh** | Delete a Compute VM. |
+| **delete_vpc.sh** | Delete a VPC. |
+| **disable_apis.sh** | Disable Service APIs in a GCP Project. |
 | **enable_apis.sh** | Enable Service APIs in a GCP Project. |
 | **login.sh** | Log in or refresh Google Cloud *credentials* so scripts can be executed. |
 | **lint.sh** | Lint the codebase. |
@@ -34,7 +42,8 @@ This script creates a new *GCP Project* and initializes it with an initial *Terr
 The script accepts 3 positional parameters, namely the desierd *GCP Project ID*, *Organization ID*, and *Billing Account*. The script also generates the *Service Account Key* for the *Terraform* identity. In this example,
 
 ```sh
-create_gcp_environment.sh <PROJECT_ID> <ORGANIZATION_ID> <BILLING_ACCOUNT_ID>
+create_gcp_environment.sh --name <PROJECT_NAME> --organization <ORGANIZATION_ID> --billing-account <BILLING_ACCOUNT_ID>
+# create_gcp_environment.sh -n <PROJECT_NAME> -o <ORGANIZATION_ID> -b <BILLING_ACCOUNT_ID>
 
 scripts/create_gcp_environment.sh test-gcp-scripts "1234567890" "123ABCD-ABC1234-123ABCD"
 Executing script: scripts/create_gcp_environment.sh
