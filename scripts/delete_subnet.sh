@@ -1,10 +1,10 @@
 #!/bin/bash
 #
-# Delete a Virtual Machine.
+# Delete a Subnet.
 #
 #   Usage:
-#     delete_vm.sh --name <INSTANCE_NAME> --project <PROJECT_ID> --zone <ZONE.
-#     delete_vm.sh -n <INSTANCE_NAME> -p <PROJECT_ID> -z <ZONE>
+#     delete_subnet.sh --name <SUBNET_NAME> --region <REGION> --project <PROJECT_ID>
+#     delete_subnet.sh -n <SUBNET_NAME> -r <REGION> -p <PROJECT_ID>
 #
 
 # Exit on error
@@ -36,9 +36,9 @@ initialize() {
     err "Error: PROJECT_ID not provided or is invalid."
   fi
 
-  # Validate the Zone argumeent
+  # Validate the Subnet argument
   if [ "$2" = "" ] ; then
-    err "Error: ZONE not provided or is invalid."
+    err "Error: SUBNET_NAME not provided or is invalid."
   fi
 
   # Initialize Verbosity
@@ -48,15 +48,15 @@ initialize() {
     debug="warning"
   fi
 
-  # Validate the Name argumeent
+  # Validate the Zone argument
   if [ "$4" = "" ] ; then
-    err "Error: INSTANCE_NAME not provided or is invalid."
+    err "Error: REGION not provided or is invalid."
   fi
 
   # Display validated arguments / parameters
   echo "Project : $1"
-  echo "Name    : $4"
-  echo "Zone    : $2"
+  echo "Name    : $2"
+  echo "Region  : $4"
   echo "Debug   : $debug"
 }
 
@@ -64,8 +64,8 @@ initialize() {
 while [[ "$#" -gt 0 ]]; do
   case $1 in
       -p|--project) project="$2"; shift ;;
-      -z|--zone) zone="$2"; shift ;;
       -n|--name) name="$2"; shift ;;
+      -r|--region) region="$2"; shift ;;
       -d|--debug) debug=1 ;;
       *) echo "Unknown parameter passed: $1"; exit 1 ;;
   esac
@@ -73,11 +73,20 @@ while [[ "$#" -gt 0 ]]; do
 done
 
 # Initialize Script
-initialize "$project" "$zone" "$debug" "$name"
+initialize "$project" "$name" "$debug" "$region"
 
 echo "Executing script: $0"
 echo "GCP project: $project"
 
-# Delete the Virtual Machine
-gcloud compute instances delete "${name}" --project="${project}" \
-  --zone="${zone}" --quiet
+# Set the project as the active
+echo "Setting active project to: ${project}"
+
+if gcloud config set project "${project}" >/dev/null 2>&1; then
+  echo "Successfully set active project: ${project}"
+else
+  err "Error: Failed to set the active project: ${project}"
+fi
+
+# Create the Subnet
+gcloud compute networks subnets delete "${name}" --region="${region}" \
+  --quiet

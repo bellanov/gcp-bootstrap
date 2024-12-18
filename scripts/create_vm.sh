@@ -87,7 +87,7 @@ echo "GCP project: $project"
 # Create the Virtual Machines
 gcloud compute instances create "${INSTANCE_NAME}" --project="${project}" \
   --zone="${zone}" --machine-type=${MACHINE_TYPE} \
-  --network-interface=network-tier=PREMIUM,stack-type=IPV4_ONLY,subnet=subnet-1 \
+  --network-interface=network-tier=PREMIUM,stack-type=IPV4_ONLY,subnet="${subnet}" \
   --no-restart-on-failure --maintenance-policy=TERMINATE \
   --provisioning-model=${PROVISIONING_MODEL} \
   --instance-termination-action=STOP \

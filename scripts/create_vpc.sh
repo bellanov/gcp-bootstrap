@@ -19,8 +19,6 @@ set -e
 #######################################
 err() {
   echo "[$(date +'%Y-%m-%dT%H:%M:%S%z')]: $*" >&2
-  echo "Usage: create_vpc.sh --name <VPC_NAME> --project <PROJECT_ID>"
-  echo "Usage: create_vpc.sh -n <VPC_NAME> -p <PROJECT_ID>"
   exit 1
 }
 
@@ -64,31 +62,28 @@ done
 initialize "$project" "$name" "$debug"
 
 echo "Executing script: $0"
-echo "GCP project: $project"
+echo "Project: $project"
+
+# Set the project as the active
+echo "Setting active project to: ${project}"
+
+if gcloud config set project "${project}" >/dev/null 2>&1; then
+  echo "Successfully set active project: ${project}"
+else
+  err "Error: Failed to set the active project."
+fi
 
 # Create the VPC network
-gcloud beta compute networks create "${name}" --project="${project}" \
+gcloud beta compute networks create "${name}" \
     --description=Cloud\ Academy\ Labs. --subnet-mode=custom --mtu=1460 \
     --bgp-routing-mode=regional --bgp-best-path-selection-mode=legacy
 
-# Create the first subnet
-# TODO: Iterate over a list of subnet names
-gcloud compute networks subnets create subnet-1 --project="${project}" \
-    --range=10.1.0.0/16 --stack-type=IPV4_ONLY --network="${name}" \
-    --region=us-central1
-
-# Create the second subnet
-gcloud compute networks subnets create subnet-2 --project="${project}" \
-    --range=10.2.0.0/16 --stack-type=IPV4_ONLY --network="${name}" \
-    --region=us-central1
-
 # Create the firewall rules
-# TODO: Iterate over a list of firewall rules
-gcloud compute firewall-rules create "${name}"-allow-icmp --project="${project}" \
+gcloud compute firewall-rules create "${name}"-allow-icmp \
     --network=projects/"${project}"/global/networks/"${name}" \
     --description=Allows\ ICMP\ connections\ from\ any\ source\ to\ any\ instance\ on\ the\ network. \
     --direction=INGRESS --priority=65534 --source-ranges=0.0.0.0/0 --action=ALLOW --rules=icmp
 
-gcloud compute firewall-rules create "${name}"-allow-ssh --project="${project}" \
-  --direction=INGRESS --priority=1000 --network=demo-vpc-1 --action=ALLOW --rules=tcp:22 \
+gcloud compute firewall-rules create "${name}"-allow-ssh \
+  --direction=INGRESS --priority=1000 --network="${name}" --action=ALLOW --rules=tcp:22 \
   --source-ranges=0.0.0.0/0

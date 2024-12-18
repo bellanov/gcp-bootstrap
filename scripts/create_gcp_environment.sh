@@ -3,14 +3,12 @@
 # Create a GCP Project to isolate infrastructure.
 #
 #   Usage:
-#     create_gcp_environment.sh <PROJECT_NAME> <ORGANIZATION_ID> <BILLING_ACCOUNT_ID>
+#     create_gcp_environment.sh --name <PROJECT_NAME> --organization <ORGANIZATION_ID> --billing-account <BILLING_ACCOUNT_ID>
+#     create_gcp_environment.sh -n <PROJECT_NAME> -o <ORGANIZATION_ID> -b <BILLING_ACCOUNT_ID>
 #
 
-PROJECT_NAME=$1
+# Project Configuration
 TIMESTAMP="$(date +%s)"
-PROJECT_ID="${PROJECT_NAME}-${TIMESTAMP}"
-ORGANIZATION_ID=$2
-BILLING_ACCOUNT=$3
 SERVICE_APIS="Cloud Resource Manager, Identity & Access Management, Secret Manager API"
 APIS="cloudresourcemanager.googleapis.com compute.googleapis.com dns.googleapis.com iam.googleapis.com"
 SERVICE_ACCOUNTS="terraform"
@@ -33,55 +31,88 @@ err() {
 #######################################
 # Validate the arguments and initialize the script.
 # Globals:
-#   PROJECT_NAME
-#   ORGANIZATION_ID
-#   BILLING_ACCOUNT
+#   None.
 # Arguments:
 #   None.
 #######################################
 initialize() {
-  # Detect the presence of all arguments, otherwise exit
-  if [ "${PROJECT_NAME}" = "" ] \
-     || [ "${ORGANIZATION_ID}" = "" ]\
-     || [ "${BILLING_ACCOUNT}" = "" ] ; then
-    err "Error: Arguments not provided or are invalid."
+
+  # Validate the GCP Project argumeent
+  if [ "$1" = "" ] ; then
+    err "Error: PROJECT_NAME not provided or is invalid."
   fi
+
+  # Validate the Organization argument
+  if [ "$2" = "" ] ; then
+    err "Error: ORGANIZATION not provided or is invalid."
+  fi
+
+  # Validate the Billing argument
+  if [ "$4" = "" ] ; then
+    err "Error: BILLING_ACCOUNT not provided or is invalid."
+  fi
+
+  # Initialize Verbosity
+  if [ "$3" = "1" ] ; then
+    debug="debug"
+  else
+    debug="warning"
+  fi
+
+  # Display validated arguments / parameters
+  echo "Project Name  : $1"
+  echo "Organization  : $2"
+  echo "Billing       : $4"
+  echo "Debug         : $debug"
+
 }
 
+# Parse command line arguments
+while [[ "$#" -gt 0 ]]; do
+  case $1 in
+      -p|--project) project="$2"; shift ;;
+      -o|--organization) organization="$2"; shift ;;
+      -b|--billing) billing="$2"; shift ;;
+      -d|--debug) debug=1 ;;
+      *) echo "Unknown parameter passed: $1"; exit 1 ;;
+  esac
+  shift
+done
 
 # Initialize Script
-initialize
+initialize "$project" "$organization" "$debug" "$billing"
 
-echo "Executing script: $0"
+# Establish Project Id
+project_id="${project}-${TIMESTAMP}"
 
 # Create the Project
-echo "Creating project: ${PROJECT_ID}"
+echo "Creating project: ${project_id}"
 
-if gcloud projects create "${PROJECT_ID}" \
-  --organization="${ORGANIZATION_ID}" \
-  --name="${PROJECT_NAME}" >/dev/null 2>&1; then
-  echo "Successfully created project: ${PROJECT_ID}"
+if gcloud projects create "${project_id}" \
+  --organization="${organization}" \
+  --name="${project}" >/dev/null 2>&1; then
+  echo "Successfully created project: ${project_id}"
 else
-  err "Error: Failed to create project."
+  err "Error: Failed to create project: ${project_id}"
 fi
 
 # Set the project as the active
-echo "Setting active project to: ${PROJECT_ID}"
+echo "Setting active project to: ${project_id}"
 
-if gcloud config set project "${PROJECT_ID}" >/dev/null 2>&1; then
-  echo "Successfully set active project: ${PROJECT_ID}"
+if gcloud config set project "${project_id}" >/dev/null 2>&1; then
+  echo "Successfully set active project: ${project_id}"
 else
-  err "Error: Failed to set the active project."
+  err "Error: Failed to set the active project: ${project_id}"
 fi
 
 # Link the billing account to the project
-echo "Linking billing account: ${BILLING_ACCOUNT}"
+echo "Linking billing account: ${billing}"
 
-if gcloud beta billing projects link "${PROJECT_ID}" \
-  --billing-account "${BILLING_ACCOUNT}" >/dev/null 2>&1; then
-  echo "Successfully linked billing account: ${BILLING_ACCOUNT}"
+if gcloud beta billing projects link "${project_id}" \
+  --billing-account "${billing}" >/dev/null 2>&1; then
+  echo "Successfully linked billing account: ${billing}"
 else
-  err "Error: Failed to link billing account."
+  err "Error: Failed to link billing account: ${billing}"
 fi
 
 # Enable the required services within the project
@@ -94,7 +125,7 @@ do
   if gcloud services enable "${API}" >/dev/null 2>&1; then
     echo "Successfully enabled API: ${API}"
   else
-    err "Error: Failed to enable API."
+    err "Error: Failed to enable API: ${API}"
   fi
 done
 
@@ -102,20 +133,20 @@ done
 echo "Service Accounts: ${SERVICE_ACCOUNTS}"
 for SERVICE_ACCOUNT in $SERVICE_ACCOUNTS
 do
-  echo "Creating service accounts & keys: ${SERVICE_ACCOUNT}-${PROJECT_ID}.key"
+  echo "Creating service accounts & keys: ${SERVICE_ACCOUNT}-${project_id}.key"
 
   if gcloud iam service-accounts create "${SERVICE_ACCOUNT}" >/dev/null 2>&1; then
     echo "Successfully created service account: ${SERVICE_ACCOUNT}"
   else
-    err "Error: Failed to create service account."
+    err "Error: Failed to create service account: ${SERVICE_ACCOUNT}"
   fi
   
   # Give the service account enough time to be created
   sleep 5
   
   # Create the service account key
-  gcloud iam service-accounts keys create "${SERVICE_ACCOUNT}-${PROJECT_ID}.key" \
-    --iam-account="${SERVICE_ACCOUNT}@${PROJECT_ID}.iam.gserviceaccount.com"
+  gcloud iam service-accounts keys create "${SERVICE_ACCOUNT}-${project_id}.key" \
+    --iam-account="${SERVICE_ACCOUNT}@${project_id}.iam.gserviceaccount.com"
 done
 
 # Assign the necessary roles to the Terraform user
@@ -125,14 +156,14 @@ echo "Assigning User Role(s): Terraform User"
 
 for ROLE in $ROLES
 do
-  if gcloud projects add-iam-policy-binding "${PROJECT_ID}" \
-    --member=serviceAccount:terraform@"${PROJECT_ID}".iam.gserviceaccount.com \
+  if gcloud projects add-iam-policy-binding "${project_id}" \
+    --member=serviceAccount:terraform@"${project_id}".iam.gserviceaccount.com \
     --role="${ROLE}" >/dev/null 2>&1; then
     echo "Successfully attached role: ${ROLE}"
   else
-    err "Error: Failed to attach role."
+    err "Error: Failed to attach role: ${ROLE}"
   fi
 done
 
 # Project Creation Complete
-echo "Project creation complete: ${PROJECT_ID}"
+echo "Project creation complete: ${project_id}"
