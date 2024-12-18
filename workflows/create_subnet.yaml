@@ -1,0 +1,23 @@
+# Subnet Workflow
+# 
+# This workflow is responsible for creating Subnets. 
+
+# Build Definition
+steps:
+
+  - id: Create VPC
+    name: gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
+    entrypoint: bash
+    args:
+    - '-c'
+    - |
+      # Create VPC
+      # scripts/create_subnet.sh --network "${_VPC_NAME}" --project "${PROJECT_ID}"
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+
+# Build Parameters
+substitutions:
+
+  _VPC_NAME:  demo-vpc-1

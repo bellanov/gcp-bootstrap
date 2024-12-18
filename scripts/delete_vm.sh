@@ -76,7 +76,7 @@ done
 initialize "$project" "$zone" "$debug" "$name"
 
 echo "Executing script: $0"
-echo "GCP project: $project"
+echo "Project: $project"
 
 # Delete the Virtual Machine
 gcloud compute instances delete "${name}" --project="${project}" \

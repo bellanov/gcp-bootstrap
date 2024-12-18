@@ -46,11 +46,18 @@ initialize() {
     err "Error: FIREWALL_RULES not provided or is invalid."
   fi
 
+  # Initialize Verbosity
+  if [ "$4" = "1" ] ; then
+    debug="debug"
+  else
+    debug="warning"
+  fi
+
   # Display validated arguments / parameters
   echo "Project         : $1"
   echo "VPC             : $2"
   echo "Firewall Rules  : $3"
-  echo "Debug           : $4"
+  echo "Debug           : $debug"
 }
 
 # Parse command line arguments
@@ -68,8 +75,7 @@ done
 # Initialize Script
 initialize "$project" "$name" "$rules" "$debug"
 
-echo "Executing script: $0"
-echo "GCP project: $project"
+echo "Project: $project"
 
 # Delete the Firewall Rules
 for rule in $rules

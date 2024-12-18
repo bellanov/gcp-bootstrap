@@ -3,8 +3,8 @@
 # Create a Virtual Machine.
 #
 #   Usage:
-#     create_vm.sh --project <PROJECT_ID> --subnet <SUBNET>
-#     create_vm.sh -p <PROJECT_ID> -s <SUBNET>
+#     create_vm.sh --subnet <SUBNET> --zone <ZONE> --project <PROJECT_ID>
+#     create_vm.sh -s <SUBNET> -z <ZONE> -p <PROJECT_ID>
 #
 
 # Instance Configuration
@@ -81,8 +81,7 @@ done
 # Initialize Script
 initialize "$project" "$zone" "$debug" "$subnet"
 
-echo "Executing script: $0"
-echo "GCP project: $project"
+echo "Project: $project"
 
 # Create the Virtual Machines
 gcloud compute instances create "${INSTANCE_NAME}" --project="${project}" \

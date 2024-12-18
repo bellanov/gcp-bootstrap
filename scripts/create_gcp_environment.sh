@@ -3,8 +3,8 @@
 # Create a GCP Project to isolate infrastructure.
 #
 #   Usage:
-#     create_gcp_environment.sh --name <PROJECT_NAME> --organization <ORGANIZATION_ID> --billing-account <BILLING_ACCOUNT_ID>
-#     create_gcp_environment.sh -n <PROJECT_NAME> -o <ORGANIZATION_ID> -b <BILLING_ACCOUNT_ID>
+#     create_gcp_environment.sh --project <PROJECT_NAME> --organization <ORGANIZATION_ID> --billing <BILLING_ACCOUNT_ID>
+#     create_gcp_environment.sh -p <PROJECT_NAME> -o <ORGANIZATION_ID> -b <BILLING_ACCOUNT_ID>
 #
 
 # Project Configuration
