@@ -39,24 +39,70 @@ Various examples of script execution.
 
 This script creates a new *GCP Project* and initializes it with an initial *Terraform* identity. Projects are used to isolate and organize infrastructure.
 
-The script accepts 3 positional parameters, namely the desierd *GCP Project ID*, *Organization ID*, and *Billing Account*. The script also generates the *Service Account Key* for the *Terraform* identity. In this example,
-
 ```sh
-create_gcp_environment.sh --name <PROJECT_NAME> --organization <ORGANIZATION_ID> --billing-account <BILLING_ACCOUNT_ID>
-# create_gcp_environment.sh -n <PROJECT_NAME> -o <ORGANIZATION_ID> -b <BILLING_ACCOUNT_ID>
+create_gcp_environment.sh --project <PROJECT_NAME> --organization <ORGANIZATION_ID> --billing <BILLING_ACCOUNT_ID>
+# OR
+# create_gcp_environment.sh -p <PROJECT_NAME> -o <ORGANIZATION_ID> -b <BILLING_ACCOUNT_ID>
 
-scripts/create_gcp_environment.sh test-gcp-scripts "1234567890" "123ABCD-ABC1234-123ABCD"
-Executing script: scripts/create_gcp_environment.sh
-Creating project: test-1733954758
-Successfully created project: test-1733954758
-Setting active project to: test-1733954758
-Successfully set active project: test-1733954758
-Linking billing account: 0181BD-E8A62D-6B2069
-Successfully linked billing account: 0181BD-E8A62D-6B2069
+scripts/create_gcp_environment.sh -p test-gcp-scripts -o "1234567890" -b "123ABCD-ABC1234-123ABCD"
+Project Name  : test-gcp-scripts
+Organization  : 1234567890
+Billing       : 123ABCD-ABC1234-123ABCD
+Debug         : warning
+Creating project: test-gcp-scripts-1734665851
+Successfully created project: test-gcp-scripts-1734665851
+Setting active project to: test-gcp-scripts-1734665851
+Successfully set active project: test-gcp-scripts-1734665851
+Linking billing account: 123ABCD-ABC1234-123ABCD
+Successfully linked billing account: 123ABCD-ABC1234-123ABCD
 Enabling Service APIs: Cloud Resource Manager, Identity & Access Management, Secret Manager API
 Enabling API: cloudresourcemanager.googleapis.com
 Successfully enabled API: cloudresourcemanager.googleapis.com
 ...
+```
+
+### create_subnet.sh
+
+This script creates a *Subnet*.
+
+```sh
+create_subnet.sh --name <SUBNET_NAME> --network <NETWORK_NAME> --ip-range <IP_RANGE> --region <REGION> --project <PROJECT_ID>
+# OR
+# create_subnet.sh -n <SUBNET_NAME> -net <NETWORK_NAME> -ipr <IP_RANGE> -r <REGION> -p <PROJECT_ID>
+
+scripts/create_subnet.sh --name subnet-1 --network demo-vpc-1 --ip-range "10.1.0.0/16" --region us-central1 --project test-gcp-scripts-1734665851
+Project : test-gcp-scripts-1734665851
+Name    : subnet-1
+Debug   : warning
+Network : demo-vpc-1
+Range   : 10.1.0.0/16
+Region  : us-central1
+Executing script: scripts/create_subnet.sh
+GCP project: test-gcp-scripts-1734665851
+Setting active project to: test-gcp-scripts-1734665851
+Successfully set active project: test-gcp-scripts-1734665851
+```
+
+### create_vm.sh
+
+This script creates a *Virtual Machine*.
+
+```sh
+create_vm.sh --subnet <SUBNET> --zone <ZONE> --project <PROJECT_ID>
+# OR
+# create_vm.sh -s <SUBNET> -z <ZONE> -p <PROJECT_ID>
+
+scripts/create_vm.sh --subnet subnet-1 --zone us-central1-a --project test-gcp-scripts-1734665851
+
+Project : test-gcp-scripts-1734665851
+Zone    : us-central1-a
+Subnet  : subnet-1
+Debug   : warning
+Executing script: scripts/create_vm.sh
+GCP project: test-gcp-scripts-1734665851
+Created [https://www.googleapis.com/compute/v1/projects/test-gcp-scripts-1734665851/zones/us-central1-a/instances/instance-1734678191].
+NAME                 ZONE           MACHINE_TYPE  PREEMPTIBLE  INTERNAL_IP  EXTERNAL_IP  STATUS
+instance-1734678191  us-central1-a  e2-micro      true         10.1.0.2     34.59.44.65  RUNNING
 ```
 
 ### delete_gcp_environment.sh
@@ -66,18 +112,66 @@ This script deletes a *GCP Project* and disable its *Billing*.
 ```sh
 delete_gcp_environment.sh <PROJECT_ID>
 
-scripts/delete_gcp_environment.sh test-gcp-scripts-1727577182
-Deleting project: test-gcp-scripts-1727577182
-Deleted [https://cloudresourcemanager.googleapis.com/v1/projects/test-gcp-scripts-1727577182].
+scripts/delete_gcp_environment.sh test-gcp-scripts-1734666480
+Deleting project: test-gcp-scripts-1734666480
+Successfully deleted project: test-gcp-scripts-1734666480
+Unlinking project billing: test-gcp-scripts-1734666480
+Successfully unlinked project billing: test-gcp-scripts-1734666480
+```
 
-You can undo this operation for a limited period by running the command below.
-    $ gcloud projects undelete test-gcp-scripts-1727577182
+### delete_vpc.sh
 
-See https://cloud.google.com/resource-manager/docs/creating-managing-projects for information on shutting down projects.
-billingAccountName: ''
-billingEnabled: false
-name: projects/test-gcp-scripts-1727577182/billingInfo
-projectId: test-gcp-scripts-1727577182
+This script *deletes* a VPC.
+
+```sh
+delete_vpc.sh --name <VPC_NAME> --rules <FIREWALL_RULES> --project <PROJECT_ID>
+# OR
+# delete_vpc.sh -n <VPC_NAME> -r <FIREWALL_RULES> -p <PROJECT_ID>
+
+scripts/delete_vpc.sh --name demo-vpc-1 --project test-gcp-scripts-1734665851 --rules "allow-icmp allow-ssh"
+Project         : test-gcp-scripts-1734665851
+VPC             : demo-vpc-1
+Firewall Rules  : allow-icmp allow-ssh
+Debug           : warning
+Executing script: scripts/delete_vpc.sh
+Project: test-gcp-scripts-1734665851
+Deleted [https://www.googleapis.com/compute/v1/projects/test-gcp-scripts-1734665851/global/networks/demo-vpc-1].
+```
+
+### delete_vm.sh
+
+This script deletes a *Virtual Machine*.
+
+```sh
+delete_vm.sh --name <INSTANCE_NAME> --project <PROJECT_ID> --zone <ZONE.
+# OR
+# delete_vm.sh -n <INSTANCE_NAME> -p <PROJECT_ID> -z <ZONE>
+
+scripts/delete_vm.sh --name instance-1734678191 --zone us-central1-a --project test-gcp-scripts-1734665851
+Project : test-gcp-scripts-1734665851
+Name    : instance-1734678191
+Zone    : us-central1-a
+Debug   : warning
+Executing script: scripts/delete_vm.sh
+GCP project: test-gcp-scripts-1734665851
+Deleted [https://www.googleapis.com/compute/v1/projects/test-gcp-scripts-1734665851/zones/us-central1-a/instances/instance-1734678191].
+```
+
+### disable_apis.sh
+
+This script disables *Service APIs* in a *GCP Project*.
+
+```sh
+disable_apis.sh <PROJECT_ID>
+
+scripts/disable_apis.sh test-gcp-scripts-1734665851
+Project: test-gcp-scripts-1734665851
+Disabling API: cloudresourcemanager.googleapis.com
+Successfully disabled API: cloudresourcemanager.googleapis.com
+Disabling API: compute.googleapis.com
+Successfully disabled API: compute.googleapis.com
+Disabling API: iam.googleapis.com
+Successfully disabled API: iam.googleapis.com
 ```
 
 ### enable_apis.sh
@@ -101,6 +195,8 @@ Enabling API: compute.googleapis.com
 This script logs in or refreshes Google Cloud *credentials* so scripts can be executed.
 
 ```sh
+login.sh
+
 scripts/login.sh 
 Your browser has been opened to visit:
 

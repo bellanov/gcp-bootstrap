@@ -41,9 +41,16 @@ initialize() {
     err "Error: VPC_NAME not provided or is invalid."
   fi
 
+  # Initialize Verbosity
+  if [ "$3" = "1" ] ; then
+    debug="debug"
+  else
+    debug="warning"
+  fi
+
   # Display validated arguments / parameters
-  echo "Project : $project"
-  echo "VPC     : $name"
+  echo "Project : $1"
+  echo "VPC     : $2"
   echo "Debug   : $debug"
 }
 
@@ -61,7 +68,6 @@ done
 # Initialize Script
 initialize "$project" "$name" "$debug"
 
-echo "Executing script: $0"
 echo "Project: $project"
 
 # Set the project as the active

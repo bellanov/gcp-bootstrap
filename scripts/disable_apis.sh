@@ -42,8 +42,7 @@ initialize() {
 # Initialize Script
 initialize
 
-echo "Executing script: $0"
-echo "GCP project: $PROJECT_ID"
+echo "Project: $PROJECT_ID"
 
 for API in $APIS
 do
