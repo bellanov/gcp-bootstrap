@@ -105,6 +105,27 @@ NAME                 ZONE           MACHINE_TYPE  PREEMPTIBLE  INTERNAL_IP  EXTE
 instance-1734678191  us-central1-a  e2-micro      true         10.1.0.2     34.59.44.65  RUNNING
 ```
 
+### create_vpc.sh
+
+This script creates a *VPC*.
+
+```sh
+create_vpc.sh --name <VPC_NAME> --project <PROJECT_ID>
+# OR
+# create_vpc.sh -n <VPC_NAME> -p <PROJECT_ID>
+
+scripts/create_vpc.sh --name demo-vpc-2 --project test-gcp-scripts-1734665851
+Project : test-gcp-scripts-1734665851
+VPC     : demo-vpc-2
+Debug   : warning
+Project: test-gcp-scripts-1734665851
+Setting active project to: test-gcp-scripts-1734665851
+Successfully set active project: test-gcp-scripts-1734665851
+Created [https://www.googleapis.com/compute/beta/projects/test-gcp-scripts-1734665851/global/networks/demo-vpc-2].
+NAME        SUBNET_MODE  BGP_ROUTING_MODE  IPV4_RANGE  GATEWAY_IPV4
+demo-vpc-2  CUSTOM       REGIONAL
+```
+
 ### delete_gcp_environment.sh
 
 This script deletes a *GCP Project* and disable its *Billing*.
