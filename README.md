@@ -43,7 +43,11 @@ This script creates a new *GCP Project* and initializes it with an initial *Terr
 create_gcp_environment.sh --project <PROJECT_NAME> --organization <ORGANIZATION_ID> --billing <BILLING_ACCOUNT_ID>
 # OR
 # create_gcp_environment.sh -p <PROJECT_NAME> -o <ORGANIZATION_ID> -b <BILLING_ACCOUNT_ID>
+```
 
+An example of script execution.
+
+```sh
 scripts/create_gcp_environment.sh -p test-gcp-scripts -o "1234567890" -b "123ABCD-ABC1234-123ABCD"
 Project Name  : test-gcp-scripts
 Organization  : 1234567890
