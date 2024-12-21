@@ -26,7 +26,7 @@ err() {
 #######################################
 # Validate the arguments and initialize the script.
 # Globals:
-#   PROJECT_IDS
+#   PROJECT_ID
 # Arguments:
 #   None.
 #######################################
@@ -41,7 +41,6 @@ initialize() {
 # Initialize Script
 initialize
 
-echo "Executing script: $0"
 echo "Refreshing Terraform roles: $PROJECT_ID"
 
 EXISTING_ROLES="roles/artifactregistry.admin roles/owner roles/run.admin roles/storage.admin roles/iam.serviceAccountAdmin"

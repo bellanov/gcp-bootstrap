@@ -69,7 +69,11 @@ This script creates a *Subnet*.
 create_subnet.sh --name <SUBNET_NAME> --network <NETWORK_NAME> --ip-range <IP_RANGE> --region <REGION> --project <PROJECT_ID>
 # OR
 # create_subnet.sh -n <SUBNET_NAME> -net <NETWORK_NAME> -ipr <IP_RANGE> -r <REGION> -p <PROJECT_ID>
+```
 
+An example of script execution.
+
+```sh
 scripts/create_subnet.sh --name subnet-1 --network demo-vpc-1 --ip-range "10.1.0.0/16" --region us-central1 --project test-gcp-scripts-1734665851
 Project : test-gcp-scripts-1734665851
 Name    : subnet-1
@@ -91,9 +95,17 @@ This script creates a *Virtual Machine*.
 create_vm.sh --subnet <SUBNET> --zone <ZONE> --project <PROJECT_ID>
 # OR
 # create_vm.sh -s <SUBNET> -z <ZONE> -p <PROJECT_ID>
+```
 
+An example of script execution.
+
+```sh
 scripts/create_vm.sh --subnet subnet-1 --zone us-central1-a --project test-gcp-scripts-1734665851
+```
 
+An example of script execution.
+
+```sh
 Project : test-gcp-scripts-1734665851
 Zone    : us-central1-a
 Subnet  : subnet-1
@@ -113,7 +125,11 @@ This script creates a *VPC*.
 create_vpc.sh --name <VPC_NAME> --project <PROJECT_ID>
 # OR
 # create_vpc.sh -n <VPC_NAME> -p <PROJECT_ID>
+```
 
+An example of script execution.
+
+```sh
 scripts/create_vpc.sh --name demo-vpc-2 --project test-gcp-scripts-1734665851
 Project : test-gcp-scripts-1734665851
 VPC     : demo-vpc-2
@@ -132,7 +148,11 @@ This script deletes a *GCP Project* and disable its *Billing*.
 
 ```sh
 delete_gcp_environment.sh <PROJECT_ID>
+```
 
+An example of script execution.
+
+```sh
 scripts/delete_gcp_environment.sh test-gcp-scripts-1734666480
 Deleting project: test-gcp-scripts-1734666480
 Successfully deleted project: test-gcp-scripts-1734666480
@@ -148,7 +168,11 @@ This script *deletes* a VPC.
 delete_vpc.sh --name <VPC_NAME> --rules <FIREWALL_RULES> --project <PROJECT_ID>
 # OR
 # delete_vpc.sh -n <VPC_NAME> -r <FIREWALL_RULES> -p <PROJECT_ID>
+```
 
+An example of script execution.
+
+```sh
 scripts/delete_vpc.sh --name demo-vpc-1 --project test-gcp-scripts-1734665851 --rules "allow-icmp allow-ssh"
 Project         : test-gcp-scripts-1734665851
 VPC             : demo-vpc-1
@@ -167,7 +191,11 @@ This script deletes a *Virtual Machine*.
 delete_vm.sh --name <INSTANCE_NAME> --project <PROJECT_ID> --zone <ZONE.
 # OR
 # delete_vm.sh -n <INSTANCE_NAME> -p <PROJECT_ID> -z <ZONE>
+```
 
+An example of script execution.
+
+```sh
 scripts/delete_vm.sh --name instance-1734678191 --zone us-central1-a --project test-gcp-scripts-1734665851
 Project : test-gcp-scripts-1734665851
 Name    : instance-1734678191
@@ -184,7 +212,11 @@ This script disables *Service APIs* in a *GCP Project*.
 
 ```sh
 disable_apis.sh <PROJECT_ID>
+```
 
+An example of script execution.
+
+```sh
 scripts/disable_apis.sh test-gcp-scripts-1734665851
 Project: test-gcp-scripts-1734665851
 Disabling API: cloudresourcemanager.googleapis.com
@@ -201,7 +233,9 @@ This script enables *Service APIs* in a *GCP Project*.
 
 ```sh
 enable_apis.sh <PROJECT_ID>
+```
 
+```sh
 scripts/enable_apis.sh test-gcp-scripts-1727577182
 Executing script: scripts/enable_apis.sh
 GCP project: test-gcp-scripts-1727577182
@@ -217,7 +251,11 @@ This script logs in or refreshes Google Cloud *credentials* so scripts can be ex
 
 ```sh
 login.sh
+```
 
+An example of script execution.
+
+```sh
 scripts/login.sh 
 Your browser has been opened to visit:
 
@@ -234,7 +272,11 @@ This script sets the *Terraform* roles / permissions for a *GCP Project*. It can
 
 ```sh
 set_terraform_roles.sh <PROJECT_ID>
+```
 
+An example of script execution.
+
+```sh
 scripts/set_terraform_roles.sh test-gcp-scripts-1727577182
 Executing script: scripts/set_terraform_roles.sh
 Refreshing Terraform roles: test-gcp-scripts-1727577182
