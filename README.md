@@ -105,11 +105,6 @@ An example of script execution.
 
 ```sh
 scripts/create_vm.sh --subnet subnet-1 --zone us-central1-a --project test-gcp-scripts-1734665851
-```
-
-An example of script execution.
-
-```sh
 Project : test-gcp-scripts-1734665851
 Zone    : us-central1-a
 Subnet  : subnet-1
@@ -238,6 +233,8 @@ This script enables *Service APIs* in a *GCP Project*.
 ```sh
 enable_apis.sh <PROJECT_ID>
 ```
+
+An example of script execution.
 
 ```sh
 scripts/enable_apis.sh test-gcp-scripts-1727577182
