@@ -9,7 +9,11 @@
 
 # Project Configuration
 TIMESTAMP="$(date +%s)"
+
+# Human-readable names of the APIs for display purposes
 SERVICE_APIS="Cloud Resource Manager, Identity & Access Management, Secret Manager API"
+
+# Actual API identifiers used for enabling services
 APIS="cloudresourcemanager.googleapis.com compute.googleapis.com dns.googleapis.com iam.googleapis.com"
 SERVICE_ACCOUNTS="terraform"
 
@@ -34,7 +38,7 @@ err() {
 #   None.
 # Arguments:
 #   None.
-#######################################
+  # Validate the GCP Project argument
 initialize() {
 
   # Validate the GCP Project argumeent
@@ -135,10 +139,14 @@ for SERVICE_ACCOUNT in $SERVICE_ACCOUNTS
 do
   echo "Creating service accounts & keys: ${SERVICE_ACCOUNT}-${project_id}.key"
 
-  if gcloud iam service-accounts create "${SERVICE_ACCOUNT}" >/dev/null 2>&1; then
-    echo "Successfully created service account: ${SERVICE_ACCOUNT}"
+  if gcloud iam service-accounts list --filter="email=${SERVICE_ACCOUNT}@${project_id}.iam.gserviceaccount.com" --format="value(email)" | grep -q "${SERVICE_ACCOUNT}@${project_id}.iam.gserviceaccount.com"; then
+    echo "Service account already exists: ${SERVICE_ACCOUNT}"
   else
-    err "Error: Failed to create service account: ${SERVICE_ACCOUNT}"
+    if gcloud iam service-accounts create "${SERVICE_ACCOUNT}" >/dev/null 2>&1; then
+      echo "Successfully created service account: ${SERVICE_ACCOUNT}"
+    else
+      err "Error: Failed to create service account: ${SERVICE_ACCOUNT}"
+    fi
   fi
   
   # Give the service account enough time to be created
