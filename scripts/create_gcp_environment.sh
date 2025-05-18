@@ -7,14 +7,27 @@
 #     create_gcp_environment.sh -p <PROJECT_NAME> -o <ORGANIZATION_ID> -b <BILLING_ACCOUNT_ID>
 #
 
-# Project Configuration
+# Globals:
+#
+#   TIMESTAMP - Unique timestamp to append to the project name
+#   APIS - APIs to enable within the project
+#   SERVICE_ACCOUNTS - Service accounts to create within the project
+
 TIMESTAMP="$(date +%s)"
 
-# Human-readable names of the APIs for display purposes
-SERVICE_APIS="Cloud Resource Manager, Identity & Access Management, Secret Manager API"
+# Enabled APIs
+# 
+#   cloudresourcemanager.googleapis.com - Cloud Resource Manager
+#   compute.googleapis.com - Compute Engine
+#   dns.googleapis.com - Cloud DNS
+#   firebase.googleapis.com - Firebase
+#   iam.googleapis.com - Identity and Access Management
 
-# Actual API identifiers used for enabling services
-APIS="cloudresourcemanager.googleapis.com compute.googleapis.com dns.googleapis.com iam.googleapis.com"
+
+# Service Accounts
+#
+#   terraform - Service account for Terraform
+
 SERVICE_ACCOUNTS="terraform"
 
 # Exit on error
@@ -30,6 +43,19 @@ set -e
 err() {
   echo "[$(date +'%Y-%m-%dT%H:%M:%S%z')]: $*" >&2
   exit 1
+}
+
+#######################################
+# Display log message.
+# Globals:
+#   None
+# Arguments:
+#   None
+# Outputs:
+#   Writes log message to stdout
+#######################################
+info() {
+  echo "[$(date +'%Y-%m-%dT%H:%M:%S%z')]: $*"
 }
 
 #######################################
@@ -64,12 +90,87 @@ initialize() {
   fi
 
   # Display validated arguments / parameters
-  echo "Project Name  : $1"
-  echo "Organization  : $2"
-  echo "Billing       : $4"
-  echo "Debug         : $debug"
+  info "Project Name  : $1"
+  info "Organization  : $2"
+  info "Billing       : $4"
+  info "Debug         : $debug"
 
 }
+
+#######################################
+# Create a GCP Project.
+# Globals:
+#   None
+# Arguments:
+#   None
+# Outputs:
+#   Writes log message to stdout
+#######################################
+create_project() {
+  # Establish Project Id
+  project_id="${1}-${TIMESTAMP}"
+
+  info "Creating project: ${project_id}"
+
+  if gcloud projects create "${project_id}" \
+    --organization="${2}" \
+    --name="${1}" >/dev/null 2>&1; then
+    info "Successfully created project: ${project_id}"
+  else
+    err "Error: Failed to create project: ${project_id}"
+  fi
+
+  # Set the project as the active
+  info "Setting active project to: ${project_id}"
+
+  if gcloud config set project "${project_id}" >/dev/null 2>&1; then
+    info "Successfully set active project: ${project_id}"
+  else
+    err "Error: Failed to set the active project: ${project_id}"
+  fi
+
+  # Link the billing account to the project
+  info "Linking billing account: ${3}"
+
+  if gcloud beta billing projects link "${project_id}" \
+    --billing-account "${billing}" >/dev/null 2>&1; then
+    info "Successfully linked billing account: ${3}"
+  else
+    err "Error: Failed to link billing account: ${3}"
+  fi
+
+}
+
+#######################################
+# Create Service Accounts.
+# Globals:
+#   None
+# Arguments:
+#   None
+# Outputs:
+#   Writes log message to stdout
+#######################################
+create_service_accounts() {
+
+  # Create the Service Accounts
+  info "Service Accounts: ${SERVICE_ACCOUNTS}"
+  for SERVICE_ACCOUNT in $SERVICE_ACCOUNTS
+  do
+    info "Creating service accounts: ${SERVICE_ACCOUNT}-${project_id}.key"
+
+    if gcloud iam service-accounts list --filter="email=${SERVICE_ACCOUNT}@${project_id}.iam.gserviceaccount.com" --format="value(email)" | grep -q "${SERVICE_ACCOUNT}@${project_id}.iam.gserviceaccount.com"; then
+      info "Service account already exists: ${SERVICE_ACCOUNT}"
+    else
+      if gcloud iam service-accounts create "${SERVICE_ACCOUNT}" >/dev/null 2>&1; then
+        info "Successfully created service account: ${SERVICE_ACCOUNT}"
+      else
+        err "Error: Failed to create service account: ${SERVICE_ACCOUNT}"
+      fi
+    fi
+  done
+
+}
+
 
 # Parse command line arguments
 while [[ "$#" -gt 0 ]]; do
@@ -86,92 +187,11 @@ done
 # Initialize Script
 initialize "$project" "$organization" "$debug" "$billing"
 
-# Establish Project Id
-project_id="${project}-${TIMESTAMP}"
-
 # Create the Project
-echo "Creating project: ${project_id}"
+create_project "$project" "$organization" "$billing"
 
-if gcloud projects create "${project_id}" \
-  --organization="${organization}" \
-  --name="${project}" >/dev/null 2>&1; then
-  echo "Successfully created project: ${project_id}"
-else
-  err "Error: Failed to create project: ${project_id}"
-fi
-
-# Set the project as the active
-echo "Setting active project to: ${project_id}"
-
-if gcloud config set project "${project_id}" >/dev/null 2>&1; then
-  echo "Successfully set active project: ${project_id}"
-else
-  err "Error: Failed to set the active project: ${project_id}"
-fi
-
-# Link the billing account to the project
-echo "Linking billing account: ${billing}"
-
-if gcloud beta billing projects link "${project_id}" \
-  --billing-account "${billing}" >/dev/null 2>&1; then
-  echo "Successfully linked billing account: ${billing}"
-else
-  err "Error: Failed to link billing account: ${billing}"
-fi
-
-# Enable the required services within the project
-echo "Enabling Service APIs: ${SERVICE_APIS}"
-
-for API in $APIS
-do
-  echo "Enabling API: ${API}"
-  
-  if gcloud services enable "${API}" >/dev/null 2>&1; then
-    echo "Successfully enabled API: ${API}"
-  else
-    err "Error: Failed to enable API: ${API}"
-  fi
-done
-
-# Create the service accounts
-echo "Service Accounts: ${SERVICE_ACCOUNTS}"
-for SERVICE_ACCOUNT in $SERVICE_ACCOUNTS
-do
-  echo "Creating service accounts & keys: ${SERVICE_ACCOUNT}-${project_id}.key"
-
-  if gcloud iam service-accounts list --filter="email=${SERVICE_ACCOUNT}@${project_id}.iam.gserviceaccount.com" --format="value(email)" | grep -q "${SERVICE_ACCOUNT}@${project_id}.iam.gserviceaccount.com"; then
-    echo "Service account already exists: ${SERVICE_ACCOUNT}"
-  else
-    if gcloud iam service-accounts create "${SERVICE_ACCOUNT}" >/dev/null 2>&1; then
-      echo "Successfully created service account: ${SERVICE_ACCOUNT}"
-    else
-      err "Error: Failed to create service account: ${SERVICE_ACCOUNT}"
-    fi
-  fi
-  
-  # Give the service account enough time to be created
-  sleep 5
-  
-  # Create the service account key
-  gcloud iam service-accounts keys create "${SERVICE_ACCOUNT}-${project_id}.key" \
-    --iam-account="${SERVICE_ACCOUNT}@${project_id}.iam.gserviceaccount.com"
-done
-
-# Assign the necessary roles to the Terraform user
-ROLES="roles/owner roles/storage.admin roles/iam.serviceAccountAdmin"
-
-echo "Assigning User Role(s): Terraform User"
-
-for ROLE in $ROLES
-do
-  if gcloud projects add-iam-policy-binding "${project_id}" \
-    --member=serviceAccount:terraform@"${project_id}".iam.gserviceaccount.com \
-    --role="${ROLE}" >/dev/null 2>&1; then
-    echo "Successfully attached role: ${ROLE}"
-  else
-    err "Error: Failed to attach role: ${ROLE}"
-  fi
-done
+# Create the Service Accounts
+create_service_accounts
 
 # Project Creation Complete
-echo "Project creation complete: ${project_id}"
+info "Project creation complete: ${project_id}"

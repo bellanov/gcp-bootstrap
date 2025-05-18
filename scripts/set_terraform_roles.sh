@@ -24,6 +24,19 @@ err() {
 }
 
 #######################################
+# Display log message.
+# Globals:
+#   None
+# Arguments:
+#   None
+# Outputs:
+#   Writes log message to stdout
+#######################################
+info() {
+  echo "[$(date +'%Y-%m-%dT%H:%M:%S%z')]: $*"
+}
+
+#######################################
 # Validate the arguments and initialize the script.
 # Globals:
 #   PROJECT_ID
@@ -41,36 +54,38 @@ initialize() {
 # Initialize Script
 initialize
 
-echo "Refreshing Terraform roles: $PROJECT_ID"
+info "Refreshing Terraform roles: $PROJECT_ID"
 
-EXISTING_ROLES="roles/artifactregistry.admin roles/owner roles/run.admin roles/storage.admin roles/iam.serviceAccountAdmin"
+EXISTING_ROLES="roles/artifactregistry.admin roles/owner roles/storage.admin roles/iam.serviceAccountAdmin"
 
-echo "Removing Existing Role(s): Terraform User"
+info "Removing Existing Role(s): Terraform User"
 for ROLE in $EXISTING_ROLES
 do
-  echo "Removing existing role: ${ROLE}"
+  info "Removing existing role: ${ROLE}"
 
   if gcloud projects remove-iam-policy-binding "${PROJECT_ID}" \
   --member=serviceAccount:terraform@"${PROJECT_ID}".iam.gserviceaccount.com \
   --role="${ROLE}" >/dev/null 2>&1; then
-    echo "Successfully removed role: ${ROLE}"
+    info "Successfully removed role: ${ROLE}"
   else
-    err "Error: Failed to remove the role. The role may already have been removed."
+    info "Warning: Failed to remove the role. The role may already have been removed."
   fi
 done
 
 ASSIGN_ROLES="roles/owner roles/storage.admin roles/iam.serviceAccountAdmin"
 
-echo "Assigning User Role(s): Terraform User"
+info "Assigning User Role(s): Terraform User"
 for ROLE in $ASSIGN_ROLES
 do
-  echo "Assigning user role: ${ROLE}"
+  info "Assigning user role: ${ROLE}"
 
   if gcloud projects add-iam-policy-binding "${PROJECT_ID}" \
   --member=serviceAccount:terraform@"${PROJECT_ID}".iam.gserviceaccount.com \
   --role="${ROLE}" >/dev/null 2>&1; then
-    echo "Successfully attached role: ${ROLE}"
+    info "Successfully attached role: ${ROLE}"
   else
     err "Error: Failed to attach role."
   fi
 done
+
+info "Terraform roles have been set for project: $PROJECT_ID"

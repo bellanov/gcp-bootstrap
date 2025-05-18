@@ -7,7 +7,11 @@
 #
 
 PROJECT_ID=$1
-APIS="cloudresourcemanager.googleapis.com compute.googleapis.com dns.googleapis.com iam.googleapis.com"
+APIS="cloudresourcemanager.googleapis.com \
+  compute.googleapis.com \
+  firebase.googleapis.com \
+  dns.googleapis.com \
+  iam.googleapis.com"
 
 # Exit on error
 set -e
