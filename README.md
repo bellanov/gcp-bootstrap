@@ -1,6 +1,8 @@
 # gcp-bootstrap
 
-Bootstrap development in *Google Cloud Platform*.
+Bootstrap development in *Google Cloud Platform (GCP)*.
+
+This script creates a GCP Project and initializes a service account for Terraform. This user will be assigned the necessary permissions that Terraform will require to manage infrastructure.
 
 ## Prerequisites
 
