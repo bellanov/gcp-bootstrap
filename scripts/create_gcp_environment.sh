@@ -7,6 +7,9 @@
 #     create_gcp_environment.sh -p <PROJECT_NAME> -o <ORGANIZATION_ID> -b <BILLING_ACCOUNT_ID>
 #
 
+# Load utility functions
+source "$(dirname "$0")/util.sh"
+
 # Globals:
 #
 #   TIMESTAMP - Unique timestamp to append to the project name
@@ -32,31 +35,6 @@ SERVICE_ACCOUNTS="terraform"
 
 # Exit on error
 set -e
-
-#######################################
-# Display an error message to STDERR.
-# Globals:
-#   None
-# Arguments:
-#   String containing the error message.
-#######################################
-err() {
-  echo "[$(date +'%Y-%m-%dT%H:%M:%S%z')]: $*" >&2
-  exit 1
-}
-
-#######################################
-# Display log message.
-# Globals:
-#   None
-# Arguments:
-#   None
-# Outputs:
-#   Writes log message to stdout
-#######################################
-info() {
-  echo "[$(date +'%Y-%m-%dT%H:%M:%S%z')]: $*"
-}
 
 #######################################
 # Validate the arguments and initialize the script.

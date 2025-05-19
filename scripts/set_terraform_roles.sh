@@ -6,35 +6,15 @@
 #     set_terraform_roles.sh <PROJECT_ID>
 #
 
+# Load utility functions
+source "$(dirname "$0")/util.sh"
+
+# Project ID
+#   The GCP project ID to set the Terraform roles for.
 PROJECT_ID=$1
 
 # Exit on error
 set -e
-
-#######################################
-# Display an error message to STDERR.
-# Globals:
-#   None
-# Arguments:
-#   String containing the error message.
-#######################################
-err() {
-  echo "[$(date +'%Y-%m-%dT%H:%M:%S%z')]: $*" >&2
-  exit 1
-}
-
-#######################################
-# Display log message.
-# Globals:
-#   None
-# Arguments:
-#   None
-# Outputs:
-#   Writes log message to stdout
-#######################################
-info() {
-  echo "[$(date +'%Y-%m-%dT%H:%M:%S%z')]: $*"
-}
 
 #######################################
 # Validate the arguments and initialize the script.

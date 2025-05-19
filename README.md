@@ -13,7 +13,6 @@ These scripts require the following:
 - An existing *Google Organization Resource* ([link](https://cloud.google.com/resource-manager/docs/creating-managing-organization))
 - An existing and valid / current *Billing Account*  ([link](https://cloud.google.com/billing/docs/how-to/create-billing-account))
 
-
 ## Scripts
 
 Summary of the available scripts and their usage. Details available within each script.
