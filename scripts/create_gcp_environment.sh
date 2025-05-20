@@ -120,36 +120,6 @@ create_project() {
 
 }
 
-#######################################
-# Create Service Accounts.
-# Globals:
-#   None
-# Arguments:
-#   None
-# Outputs:
-#   Writes log message to stdout
-#######################################
-create_service_accounts() {
-
-  # Create the Service Accounts
-  info "Service Accounts: ${SERVICE_ACCOUNTS}"
-  for SERVICE_ACCOUNT in $SERVICE_ACCOUNTS
-  do
-    info "Creating service accounts: ${SERVICE_ACCOUNT}-${project_id}.key"
-
-    if gcloud iam service-accounts list --filter="email=${SERVICE_ACCOUNT}@${project_id}.iam.gserviceaccount.com" --format="value(email)" | grep -q "${SERVICE_ACCOUNT}@${project_id}.iam.gserviceaccount.com"; then
-      info "Service account already exists: ${SERVICE_ACCOUNT}"
-    else
-      if gcloud iam service-accounts create "${SERVICE_ACCOUNT}" >/dev/null 2>&1; then
-        info "Successfully created service account: ${SERVICE_ACCOUNT}"
-      else
-        err "Error: Failed to create service account: ${SERVICE_ACCOUNT}"
-      fi
-    fi
-  done
-
-}
-
 
 # Parse command line arguments
 while [[ "$#" -gt 0 ]]; do
@@ -169,8 +139,5 @@ initialize "$project" "$organization" "$debug" "$billing"
 # Create the Project
 create_project "$project" "$organization" "$billing"
 
-# Create the Service Accounts
-create_service_accounts
-
 # Project Creation Complete
-info "Project creation complete: ${project_id}"
+info "Project creation complete: ${project}"

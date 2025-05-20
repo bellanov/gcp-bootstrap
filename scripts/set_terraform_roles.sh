@@ -10,9 +10,21 @@
 # shellcheck disable=SC1091
 source "$(dirname "$0")/util.sh"
 
-# Project ID
-#   The GCP project ID to set the Terraform roles for.
+# Globals:
+#
+#   PROJECT_ID - GCP p
+#   APIS - APIs to enable within the project
+#   SERVICE_ACCOUNTS - Service accounts to create within the project
+
+
+# GCP Project ID
 PROJECT_ID=$1
+
+# Existing roles to remove
+EXISTING_ROLES="roles/artifactregistry.admin roles/owner roles/storage.admin roles/iam.serviceAccountAdmin"
+
+# Roles to assign
+ASSIGN_ROLES="roles/owner roles/storage.admin roles/iam.serviceAccountAdmin"
 
 # Exit on error
 set -e
@@ -37,9 +49,10 @@ initialize
 
 info "Refreshing Terraform roles: $PROJECT_ID"
 
-EXISTING_ROLES="roles/artifactregistry.admin roles/owner roles/storage.admin roles/iam.serviceAccountAdmin"
 
+# Remove Existing Roles
 info "Removing Existing Role(s): Terraform User"
+
 for ROLE in $EXISTING_ROLES
 do
   info "Removing existing role: ${ROLE}"
@@ -53,8 +66,7 @@ do
   fi
 done
 
-ASSIGN_ROLES="roles/owner roles/storage.admin roles/iam.serviceAccountAdmin"
-
+# Assign Updated Roles
 info "Assigning User Role(s): Terraform User"
 for ROLE in $ASSIGN_ROLES
 do
