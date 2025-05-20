@@ -8,6 +8,7 @@
 #
 
 # Load utility functions
+# shellcheck disable=SC1091
 source "$(dirname "$0")/util.sh"
 
 # Globals:
