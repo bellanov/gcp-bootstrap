@@ -1,10 +1,10 @@
 #!/bin/bash
 #
-# Create Service Accounts.
+# Create Service Account Keys.
 #
 #   Usage:
-#     create_service_accounts.sh --project <PROJECT_NAME> --organization <ORGANIZATION_ID> --billing <BILLING_ACCOUNT_ID>
-#     create_service_accounts.sh -p <PROJECT_NAME> -o <ORGANIZATION_ID> -b <BILLING_ACCOUNT_ID>
+#     create_service_account_keys.sh --project <PROJECT_NAME> --organization <ORGANIZATION_ID> --billing <BILLING_ACCOUNT_ID>
+#     create_service_account_keys.sh -p <PROJECT_NAME> -o <ORGANIZATION_ID> -b <BILLING_ACCOUNT_ID>
 #
 
 # Load utility functions
@@ -75,23 +75,21 @@ initialize() {
 # Outputs:
 #   Writes log message to stdout
 #######################################
-create_service_accounts() {
+create_service_account_keys() {
 
-  # Create the Service Accounts
+  # Create the Service Account Keys
   info "Service Accounts: ${SERVICE_ACCOUNTS}"
   for SERVICE_ACCOUNT in $SERVICE_ACCOUNTS
   do
-    info "Creating service accounts: ${SERVICE_ACCOUNT}-${1}.key"
+    info "Creating service account keys: ${SERVICE_ACCOUNT}-${1}.key"
 
-    if gcloud iam service-accounts list --filter="email=${SERVICE_ACCOUNT}@${1}.iam.gserviceaccount.com" --format="value(email)" | grep -q "${SERVICE_ACCOUNT}@${project_id}.iam.gserviceaccount.com"; then
-      info "Service account already exists: ${SERVICE_ACCOUNT}"
+    if gcloud iam service-accounts keys create ${SERVICE_ACCOUNT}-${1}.key \
+        --iam-account=${SERVICE_ACCOUNT}@${1}.iam.gserviceaccount.com; then
+      info "Successfully created service account key: ${SERVICE_ACCOUNT}"
     else
-      if gcloud iam service-accounts create "${SERVICE_ACCOUNT}"; then
-        info "Successfully created service account: ${SERVICE_ACCOUNT}"
-      else
-        err "Error: Failed to create service account: ${SERVICE_ACCOUNT}. It may already exist."
-      fi
+      err "Error: Failed to create service account key: ${SERVICE_ACCOUNT}."
     fi
+
   done
 
 }
@@ -113,4 +111,4 @@ done
 initialize "$project" "$organization" "$debug" "$billing"
 
 # Create the Service Accounts
-create_service_accounts "$project"
+create_service_account_keys "$project"

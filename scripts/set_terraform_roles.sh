@@ -12,7 +12,7 @@ source "$(dirname "$0")/util.sh"
 
 # Globals:
 #
-#   PROJECT_ID - GCP p
+#   PROJECT_ID - GCP Project ID
 #   APIS - APIs to enable within the project
 #   SERVICE_ACCOUNTS - Service accounts to create within the project
 
