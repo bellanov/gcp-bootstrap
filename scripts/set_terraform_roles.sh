@@ -6,22 +6,28 @@
 #     set_terraform_roles.sh <PROJECT_ID>
 #
 
+# Load utility functions
+# shellcheck disable=SC1091
+source "$(dirname "$0")/util.sh"
+
+# Globals:
+#
+#   PROJECT_ID - GCP Project ID
+#   APIS - APIs to enable within the project
+#   SERVICE_ACCOUNTS - Service accounts to create within the project
+
+
+# GCP Project ID
 PROJECT_ID=$1
+
+# Existing roles to remove
+EXISTING_ROLES="roles/artifactregistry.admin roles/owner roles/storage.admin roles/iam.serviceAccountAdmin"
+
+# Roles to assign
+ASSIGN_ROLES="roles/owner roles/storage.admin roles/iam.serviceAccountAdmin"
 
 # Exit on error
 set -e
-
-#######################################
-# Display an error message to STDERR.
-# Globals:
-#   None
-# Arguments:
-#   String containing the error message.
-#######################################
-err() {
-  echo "[$(date +'%Y-%m-%dT%H:%M:%S%z')]: $*" >&2
-  exit 1
-}
 
 #######################################
 # Validate the arguments and initialize the script.
@@ -41,36 +47,38 @@ initialize() {
 # Initialize Script
 initialize
 
-echo "Refreshing Terraform roles: $PROJECT_ID"
+info "Refreshing Terraform roles: $PROJECT_ID"
 
-EXISTING_ROLES="roles/artifactregistry.admin roles/owner roles/run.admin roles/storage.admin roles/iam.serviceAccountAdmin"
 
-echo "Removing Existing Role(s): Terraform User"
+# Remove Existing Roles
+info "Removing Existing Role(s): Terraform User"
+
 for ROLE in $EXISTING_ROLES
 do
-  echo "Removing existing role: ${ROLE}"
+  info "Removing existing role: ${ROLE}"
 
   if gcloud projects remove-iam-policy-binding "${PROJECT_ID}" \
   --member=serviceAccount:terraform@"${PROJECT_ID}".iam.gserviceaccount.com \
   --role="${ROLE}" >/dev/null 2>&1; then
-    echo "Successfully removed role: ${ROLE}"
+    info "Successfully removed role: ${ROLE}"
   else
-    err "Error: Failed to remove the role. The role may already have been removed."
+    info "Warning: Failed to remove the role. The role may already have been removed."
   fi
 done
 
-ASSIGN_ROLES="roles/owner roles/storage.admin roles/iam.serviceAccountAdmin"
-
-echo "Assigning User Role(s): Terraform User"
+# Assign Updated Roles
+info "Assigning User Role(s): Terraform User"
 for ROLE in $ASSIGN_ROLES
 do
-  echo "Assigning user role: ${ROLE}"
+  info "Assigning user role: ${ROLE}"
 
   if gcloud projects add-iam-policy-binding "${PROJECT_ID}" \
   --member=serviceAccount:terraform@"${PROJECT_ID}".iam.gserviceaccount.com \
   --role="${ROLE}" >/dev/null 2>&1; then
-    echo "Successfully attached role: ${ROLE}"
+    info "Successfully attached role: ${ROLE}"
   else
     err "Error: Failed to attach role."
   fi
 done
+
+info "Terraform roles have been set for project: $PROJECT_ID"
