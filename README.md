@@ -30,7 +30,29 @@ Summary of the available scripts and their usage. Details available within each 
 
 Summary of project usage.
 
-### 1. Create GCP Project
+
+### 1. Establish Authentication Context
+
+This script logs in or refreshes Google Cloud *credentials* so scripts can be executed.
+
+```sh
+login.sh
+```
+
+An example of script execution.
+
+```sh
+scripts/login.sh 
+Your browser has been opened to visit:
+
+    https://accounts.google.com/o/oauth2/auth?response_type=code&client_id=32555940559.apps.googleusercontent.com ...
+
+You are now logged in as [person@company.com].
+Your current project is [None].  You can change this setting by running:
+  $ gcloud config set project PROJECT_ID
+```
+
+### 2. Create GCP Project
 
 First, a Google Cloud Platform (GCP) project needs to be created. Projects are used to isolate and organize infrastructure.
 
@@ -67,9 +89,14 @@ Successfully enabled API: iam.googleapis.com
 [2025-06-04T23:20:05-0400] [INFO]: Project creation complete: test-gcp-scripts
 ```
 
-### delete_gcp_environment.sh
 
-This script deletes a *GCP Project* and disable its *Billing*.
+## Miscellaneous
+
+Summary of other available scripts.
+
+### Delete a Google Cloud Platform (GCP) Project
+
+The `delete_gcp_environment.sh` script deletes a *GCP Project* and disable its *Billing*.
 
 ```sh
 delete_gcp_environment.sh <PROJECT_ID>
@@ -98,30 +125,9 @@ GCP project: test-gcp-scripts-1734665851
 Deleted [https://www.googleapis.com/compute/v1/projects/test-gcp-scripts-1734665851/zones/us-central1-a/instances/instance-1734678191].
 ```
 
-### login.sh
+### Set / Update Terraform Roles
 
-This script logs in or refreshes Google Cloud *credentials* so scripts can be executed.
-
-```sh
-login.sh
-```
-
-An example of script execution.
-
-```sh
-scripts/login.sh 
-Your browser has been opened to visit:
-
-    https://accounts.google.com/o/oauth2/auth?response_type=code&client_id=32555940559.apps.googleusercontent.com ...
-
-You are now logged in as [person@company.com].
-Your current project is [None].  You can change this setting by running:
-  $ gcloud config set project PROJECT_ID
-```
-
-### set_terraform_roles.sh
-
-This script sets the *Terraform* roles / permissions for a *GCP Project*. It can be executed any number of times to update a project.
+The `set_terraform_roles.sh` script sets the *Terraform* roles / permissions for a *GCP Project*. It can be executed any number of times to update a project.
 
 ```sh
 set_terraform_roles.sh <PROJECT_ID>
