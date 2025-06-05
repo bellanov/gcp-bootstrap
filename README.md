@@ -71,7 +71,7 @@ create_gcp_environment.sh --project <PROJECT_NAME> --organization <ORGANIZATION_
 An example of script execution.
 
 ```sh
-scripts/create_gcp_environment.sh --project test-gcp-scripts --organization "1234567890" --billing "123ABCD-ABC1234-123ABCD"
+scripts/create_gcp_environment.sh --project test-gcp-scripts --organization $ORGANIZATION_ID --billing $BILLING_ACCOUNT
 
 [2025-06-04T23:19:37-0400] [INFO]: Project Name  : test-gcp-scripts
 [2025-06-04T23:19:37-0400] [INFO]: Organization  : 105637539410
@@ -95,7 +95,7 @@ Successfully enabled API: iam.googleapis.com
 
 Now that a GCP Project exists, an identity for the **Terraform User** will be required.
 
-This user will facilitate the *interactions* between ***Terraform*** and ***Google Cloud Platform***, so its *Service Account Key* will be used to authenticate via the **GOOGLE_APPLICATION_CREDENTIALS** environment variable within the environment of your choosing (i.e., local, Terraform Cloud).
+This user will facilitate the *interactions* between ***Terraform*** and ***Google Cloud Platform***, created using the `create_service_accounts.sh` script.
 
 An example of script execution.
 
@@ -113,6 +113,27 @@ WARNING: The following filter keys were not present in any resource : email
 Created service account [terraform].
 [2025-06-05T00:15:18-0400] [INFO]: Successfully created service account: terraform
 ```
+
+### 4. Create Terraform User Key
+
+A *Service Account Key* will be used to authenticate via the **GOOGLE_APPLICATION_CREDENTIALS** environment variable within the environment of your choosing (i.e., local, Terraform Cloud).
+
+The `create_service_account_keys.sh` script is responsible for generating the key.
+ 
+```sh
+scripts/create_service_account_keys.sh --project test-gcp-scripts-1749093577 --organization $ORGANIZATION_ID --billing $BILLING_ACCOUNT
+[2025-06-05T01:12:39-0400] [INFO]: Project Name  : test-gcp-scripts-1749093577
+[2025-06-05T01:12:39-0400] [INFO]: Organization  : 105637539410
+[2025-06-05T01:12:39-0400] [INFO]: Billing       : 0181BD-E8A62D-6B2069
+[2025-06-05T01:12:39-0400] [INFO]: Debug         : warning
+[2025-06-05T01:12:39-0400] [INFO]: Setting active project to: test-gcp-scripts-1749093577
+[2025-06-05T01:12:40-0400] [INFO]: Successfully set active project: test-gcp-scripts-1749093577
+[2025-06-05T01:12:40-0400] [INFO]: Service Accounts: terraform
+[2025-06-05T01:12:40-0400] [INFO]: Creating service account keys: terraform-test-gcp-scripts-1749093577.key
+created key [e789d53965bbd378ec85ac61966cbd80037626e0] of type [json] as [terraform-test-gcp-scripts-1749093577.key] for [terraform@test-gcp-scripts-1749093577.iam.gserviceaccount.com]
+[2025-06-05T01:12:42-0400] [INFO]: Successfully created service account key: terraform
+```
+
 
 ## Miscellaneous
 
