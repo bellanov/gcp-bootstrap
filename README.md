@@ -24,14 +24,19 @@ Summary of the available scripts and their usage. Details available within each 
 | **login.sh** | Log in or refresh Google Cloud *credentials* so scripts can be executed. |
 | **lint.sh** | Lint the codebase. |
 | **set_terraform_roles.sh** | Set the Terraform roles for a GCP Project. |
+| **util.sh** | A set of utilities reusable across scripts. |
 
-## Examples
+## Usage
 
-Various examples of script execution.
+Summary of project usage.
 
-### create_gcp_environment.sh
+### 1. Create GCP Project
 
-This script creates a new *GCP Project* and initializes it with an initial *Terraform* identity. Projects are used to isolate and organize infrastructure.
+First, a Google Cloud Platform (GCP) project needs to be created. Projects are used to isolate and organize infrastructure.
+
+This is accomplished by executing the `create_gcp_environment.sh` script.
+
+This script creates a new *GCP Project* and initializes it with an initial *Terraform* identity. 
 
 ```sh
 create_gcp_environment.sh --project <PROJECT_NAME> --organization <ORGANIZATION_ID> --billing <BILLING_ACCOUNT_ID>
@@ -42,21 +47,24 @@ create_gcp_environment.sh --project <PROJECT_NAME> --organization <ORGANIZATION_
 An example of script execution.
 
 ```sh
-scripts/create_gcp_environment.sh -p test-gcp-scripts -o "1234567890" -b "123ABCD-ABC1234-123ABCD"
-Project Name  : test-gcp-scripts
-Organization  : 1234567890
-Billing       : 123ABCD-ABC1234-123ABCD
-Debug         : warning
-Creating project: test-gcp-scripts-1734665851
-Successfully created project: test-gcp-scripts-1734665851
-Setting active project to: test-gcp-scripts-1734665851
-Successfully set active project: test-gcp-scripts-1734665851
-Linking billing account: 123ABCD-ABC1234-123ABCD
-Successfully linked billing account: 123ABCD-ABC1234-123ABCD
-Enabling Service APIs: Cloud Resource Manager, Identity & Access Management, Secret Manager API
+scripts/create_gcp_environment.sh --project test-gcp-scripts --organization "1234567890" --billing "123ABCD-ABC1234-123ABCD"
+
+[2025-06-04T23:19:37-0400] [INFO]: Project Name  : test-gcp-scripts
+[2025-06-04T23:19:37-0400] [INFO]: Organization  : 105637539410
+[2025-06-04T23:19:37-0400] [INFO]: Billing       : 0181BD-E8A62D-6B2069
+[2025-06-04T23:19:37-0400] [INFO]: Debug         : warning
+[2025-06-04T23:19:37-0400] [INFO]: Creating project: test-gcp-scripts-1749093577
+[2025-06-04T23:19:49-0400] [INFO]: Successfully created project: test-gcp-scripts-1749093577
+[2025-06-04T23:19:49-0400] [INFO]: Setting active project to: test-gcp-scripts-1749093577
+[2025-06-04T23:19:50-0400] [INFO]: Successfully set active project: test-gcp-scripts-1749093577
+[2025-06-04T23:19:50-0400] [INFO]: Linking billing account: 0181BD-E8A62D-6B2069
+[2025-06-04T23:19:53-0400] [INFO]: Successfully linked billing account: 0181BD-E8A62D-6B2069
+Enabling Service APIs: 
 Enabling API: cloudresourcemanager.googleapis.com
 Successfully enabled API: cloudresourcemanager.googleapis.com
-...
+Enabling API: iam.googleapis.com
+Successfully enabled API: iam.googleapis.com
+[2025-06-04T23:20:05-0400] [INFO]: Project creation complete: test-gcp-scripts
 ```
 
 ### delete_gcp_environment.sh
