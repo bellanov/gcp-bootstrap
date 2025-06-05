@@ -34,6 +34,12 @@ TIMESTAMP="$(date +%s)"
 
 SERVICE_ACCOUNTS="terraform"
 
+# APIs to enable
+#
+#   iam.googleapis.com - Identity and Access Management
+
+APIS="cloudresourcemanager.googleapis.com iam.googleapis.com"
+
 # Exit on error
 set -e
 
@@ -117,6 +123,20 @@ create_project() {
   else
     err "Error: Failed to link billing account: ${3}"
   fi
+
+  # Enable the required services within the project
+  echo "Enabling Service APIs: ${SERVICE_APIS}"
+
+  for API in $APIS
+  do
+    echo "Enabling API: ${API}"
+
+    if gcloud services enable "${API}" >/dev/null 2>&1; then
+      echo "Successfully enabled API: ${API}"
+    else
+      err "Error: Failed to enable API."
+    fi
+  done
 
 }
 
