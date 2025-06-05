@@ -33,7 +33,9 @@ Summary of project usage.
 
 ### 1. Establish Authentication Context
 
-This script logs in or refreshes Google Cloud *credentials* so scripts can be executed.
+First, the authentication needs to be established so we have the ability to **interact** with *Google Cloud Platform (GCP)*.
+
+The `login.sh` script logs in or refreshes Google Cloud *credentials* so scripts can be executed.
 
 ```sh
 login.sh
@@ -54,7 +56,7 @@ Your current project is [None].  You can change this setting by running:
 
 ### 2. Create GCP Project
 
-First, a Google Cloud Platform (GCP) project needs to be created. Projects are used to isolate and organize infrastructure.
+Next, a Google Cloud Platform (GCP) **project** needs to be created. *Projects* are used to isolate and organize infrastructure.
 
 This is accomplished by executing the `create_gcp_environment.sh` script.
 
@@ -89,10 +91,32 @@ Successfully enabled API: iam.googleapis.com
 [2025-06-04T23:20:05-0400] [INFO]: Project creation complete: test-gcp-scripts
 ```
 
+### 3. Create Terraforrm User
+
+Now that a GCP Project exists, an identity for the **Terraform User** will be required.
+
+This user will facilitate the *interactions* between ***Terraform*** and ***Google Cloud Platform***, so its *Service Account Key* will be used to authenticate via the **GOOGLE_APPLICATION_CREDENTIALS** environment variable within the environment of your choosing (i.e., local, Terraform Cloud).
+
+An example of script execution.
+
+```sh
+scripts/create_service_accounts.sh --project test-gcp-scripts-1749093577 --organization $ORGANIZATION_ID --billing $BILLING_ACCOUNT
+[2025-06-05T00:15:14-0400] [INFO]: Project Name  : test-gcp-scripts-1749093577
+[2025-06-05T00:15:14-0400] [INFO]: Organization  : 105637539410
+[2025-06-05T00:15:14-0400] [INFO]: Billing       : 0181BD-E8A62D-6B2069
+[2025-06-05T00:15:14-0400] [INFO]: Debug         : warning
+[2025-06-05T00:15:14-0400] [INFO]: Setting active project to: test-gcp-scripts-1749093577
+[2025-06-05T00:15:15-0400] [INFO]: Successfully set active project: test-gcp-scripts-1749093577
+[2025-06-05T00:15:15-0400] [INFO]: Service Accounts: terraform
+[2025-06-05T00:15:15-0400] [INFO]: Creating service accounts: terraform-test-gcp-scripts-1749093577.key
+WARNING: The following filter keys were not present in any resource : email
+Created service account [terraform].
+[2025-06-05T00:15:18-0400] [INFO]: Successfully created service account: terraform
+```
 
 ## Miscellaneous
 
-Summary of other available scripts.
+Summary of other available *scripts*.
 
 ### Delete a Google Cloud Platform (GCP) Project
 
