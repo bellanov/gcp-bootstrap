@@ -24,14 +24,43 @@ Summary of the available scripts and their usage. Details available within each 
 | **login.sh** | Log in or refresh Google Cloud *credentials* so scripts can be executed. |
 | **lint.sh** | Lint the codebase. |
 | **set_terraform_roles.sh** | Set the Terraform roles for a GCP Project. |
+| **util.sh** | A set of utilities reusable across scripts. |
 
-## Examples
+## Usage
 
-Various examples of script execution.
+Summary of project usage.
 
-### create_gcp_environment.sh
 
-This script creates a new *GCP Project* and initializes it with an initial *Terraform* identity. Projects are used to isolate and organize infrastructure.
+### 1. Establish Authentication Context
+
+First, the authentication needs to be established so we have the ability to **interact** with *Google Cloud Platform (GCP)*.
+
+The `login.sh` script logs in or refreshes Google Cloud *credentials* so scripts can be executed.
+
+```sh
+login.sh
+```
+
+An example of script execution.
+
+```sh
+scripts/login.sh 
+Your browser has been opened to visit:
+
+    https://accounts.google.com/o/oauth2/auth?response_type=code&client_id=32555940559.apps.googleusercontent.com ...
+
+You are now logged in as [person@company.com].
+Your current project is [None].  You can change this setting by running:
+  $ gcloud config set project PROJECT_ID
+```
+
+### 2. Create GCP Project
+
+Next, a Google Cloud Platform (GCP) **project** needs to be created. *Projects* are used to isolate and organize infrastructure.
+
+This is accomplished by executing the `create_gcp_environment.sh` script.
+
+This script creates a new *GCP Project* and initializes it with an initial *Terraform* identity. 
 
 ```sh
 create_gcp_environment.sh --project <PROJECT_NAME> --organization <ORGANIZATION_ID> --billing <BILLING_ACCOUNT_ID>
@@ -42,26 +71,82 @@ create_gcp_environment.sh --project <PROJECT_NAME> --organization <ORGANIZATION_
 An example of script execution.
 
 ```sh
-scripts/create_gcp_environment.sh -p test-gcp-scripts -o "1234567890" -b "123ABCD-ABC1234-123ABCD"
-Project Name  : test-gcp-scripts
-Organization  : 1234567890
-Billing       : 123ABCD-ABC1234-123ABCD
-Debug         : warning
-Creating project: test-gcp-scripts-1734665851
-Successfully created project: test-gcp-scripts-1734665851
-Setting active project to: test-gcp-scripts-1734665851
-Successfully set active project: test-gcp-scripts-1734665851
-Linking billing account: 123ABCD-ABC1234-123ABCD
-Successfully linked billing account: 123ABCD-ABC1234-123ABCD
-Enabling Service APIs: Cloud Resource Manager, Identity & Access Management, Secret Manager API
+scripts/create_gcp_environment.sh --project test-gcp-scripts --organization $ORGANIZATION_ID --billing $BILLING_ACCOUNT
+
+[2025-06-04T23:19:37-0400] [INFO]: Project Name  : test-gcp-scripts
+[2025-06-04T23:19:37-0400] [INFO]: Organization  : 105637539410
+[2025-06-04T23:19:37-0400] [INFO]: Billing       : 0181BD-E8A62D-6B2069
+[2025-06-04T23:19:37-0400] [INFO]: Debug         : warning
+[2025-06-04T23:19:37-0400] [INFO]: Creating project: test-gcp-scripts-1749093577
+[2025-06-04T23:19:49-0400] [INFO]: Successfully created project: test-gcp-scripts-1749093577
+[2025-06-04T23:19:49-0400] [INFO]: Setting active project to: test-gcp-scripts-1749093577
+[2025-06-04T23:19:50-0400] [INFO]: Successfully set active project: test-gcp-scripts-1749093577
+[2025-06-04T23:19:50-0400] [INFO]: Linking billing account: 0181BD-E8A62D-6B2069
+[2025-06-04T23:19:53-0400] [INFO]: Successfully linked billing account: 0181BD-E8A62D-6B2069
+Enabling Service APIs: 
 Enabling API: cloudresourcemanager.googleapis.com
 Successfully enabled API: cloudresourcemanager.googleapis.com
-...
+Enabling API: iam.googleapis.com
+Successfully enabled API: iam.googleapis.com
+[2025-06-04T23:20:05-0400] [INFO]: Project creation complete: test-gcp-scripts
 ```
 
-### delete_gcp_environment.sh
+### 3. Create Terraforrm User
 
-This script deletes a *GCP Project* and disable its *Billing*.
+Now that a GCP Project exists, an identity for the **Terraform User** will be required.
+
+This user will facilitate the *interactions* between ***Terraform*** and ***Google Cloud Platform***, created using the `create_service_accounts.sh` script.
+
+An example of script execution.
+
+```sh
+scripts/create_service_accounts.sh --project test-gcp-scripts-1749093577 --organization $ORGANIZATION_ID --billing $BILLING_ACCOUNT
+[2025-06-05T00:15:14-0400] [INFO]: Project Name  : test-gcp-scripts-1749093577
+[2025-06-05T00:15:14-0400] [INFO]: Organization  : 105637539410
+[2025-06-05T00:15:14-0400] [INFO]: Billing       : 0181BD-E8A62D-6B2069
+[2025-06-05T00:15:14-0400] [INFO]: Debug         : warning
+[2025-06-05T00:15:14-0400] [INFO]: Setting active project to: test-gcp-scripts-1749093577
+[2025-06-05T00:15:15-0400] [INFO]: Successfully set active project: test-gcp-scripts-1749093577
+[2025-06-05T00:15:15-0400] [INFO]: Service Accounts: terraform
+[2025-06-05T00:15:15-0400] [INFO]: Creating service accounts: terraform-test-gcp-scripts-1749093577.key
+WARNING: The following filter keys were not present in any resource : email
+Created service account [terraform].
+[2025-06-05T00:15:18-0400] [INFO]: Successfully created service account: terraform
+```
+
+### 4. Create Terraform User Key
+
+A *Service Account Key* will be used to authenticate via the **GOOGLE_APPLICATION_CREDENTIALS** environment variable within the environment of your choosing (i.e., local, Terraform Cloud).
+
+The `create_service_account_keys.sh` script is responsible for generating the key.
+ 
+```sh
+scripts/create_service_account_keys.sh --project test-gcp-scripts-1749093577 --organization $ORGANIZATION_ID --billing $BILLING_ACCOUNT
+[2025-06-05T01:12:39-0400] [INFO]: Project Name  : test-gcp-scripts-1749093577
+[2025-06-05T01:12:39-0400] [INFO]: Organization  : 105637539410
+[2025-06-05T01:12:39-0400] [INFO]: Billing       : 0181BD-E8A62D-6B2069
+[2025-06-05T01:12:39-0400] [INFO]: Debug         : warning
+[2025-06-05T01:12:39-0400] [INFO]: Setting active project to: test-gcp-scripts-1749093577
+[2025-06-05T01:12:40-0400] [INFO]: Successfully set active project: test-gcp-scripts-1749093577
+[2025-06-05T01:12:40-0400] [INFO]: Service Accounts: terraform
+[2025-06-05T01:12:40-0400] [INFO]: Creating service account keys: terraform-test-gcp-scripts-1749093577.key
+created key [e789d53965bbd378ec85ac61966cbd80037626e0] of type [json] as [terraform-test-gcp-scripts-1749093577.key] for [terraform@test-gcp-scripts-1749093577.iam.gserviceaccount.com]
+[2025-06-05T01:12:42-0400] [INFO]: Successfully created service account key: terraform
+```
+
+The key's contents can be extracted via jq for input as the **GOOGLE_APPLICATION_CREDENTIALS** environment variable.
+
+```sh
+cat terraform-test-gcp-scripts-1749093577.key | jq -c
+```
+
+## Miscellaneous
+
+Summary of other available *scripts*.
+
+### Delete a Google Cloud Platform (GCP) Project
+
+The `delete_gcp_environment.sh` script deletes a *GCP Project* and disable its *Billing*.
 
 ```sh
 delete_gcp_environment.sh <PROJECT_ID>
@@ -90,30 +175,9 @@ GCP project: test-gcp-scripts-1734665851
 Deleted [https://www.googleapis.com/compute/v1/projects/test-gcp-scripts-1734665851/zones/us-central1-a/instances/instance-1734678191].
 ```
 
-### login.sh
+### Set / Update Terraform Roles
 
-This script logs in or refreshes Google Cloud *credentials* so scripts can be executed.
-
-```sh
-login.sh
-```
-
-An example of script execution.
-
-```sh
-scripts/login.sh 
-Your browser has been opened to visit:
-
-    https://accounts.google.com/o/oauth2/auth?response_type=code&client_id=32555940559.apps.googleusercontent.com ...
-
-You are now logged in as [person@company.com].
-Your current project is [None].  You can change this setting by running:
-  $ gcloud config set project PROJECT_ID
-```
-
-### set_terraform_roles.sh
-
-This script sets the *Terraform* roles / permissions for a *GCP Project*. It can be executed any number of times to update a project.
+The `set_terraform_roles.sh` script sets the *Terraform* roles / permissions for a *GCP Project*. It can be executed any number of times to update a project.
 
 ```sh
 set_terraform_roles.sh <PROJECT_ID>
