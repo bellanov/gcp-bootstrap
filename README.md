@@ -134,7 +134,7 @@ created key [e789d53965bbd378ec85ac61966cbd80037626e0] of type [json] as [terraf
 [2025-06-05T01:12:42-0400] [INFO]: Successfully created service account key: terraform
 ```
 
-The key's contents can be extracted via jq for input as the **GOOGLE_APPLICATION_CREDENTIALS** environment variable.
+The key's contents can be extracted via `jq` for input as the **GOOGLE_APPLICATION_CREDENTIALS** environment variable.
 
 ```sh
 cat terraform-test-gcp-scripts-1749093577.key | jq -c
