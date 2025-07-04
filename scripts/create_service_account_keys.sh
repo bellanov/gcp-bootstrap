@@ -83,8 +83,8 @@ create_service_account_keys() {
   do
     info "Creating service account keys: ${SERVICE_ACCOUNT}-${1}.key"
 
-    if gcloud iam service-accounts keys create ${SERVICE_ACCOUNT}-${1}.key \
-        --iam-account=${SERVICE_ACCOUNT}@${1}.iam.gserviceaccount.com; then
+    if gcloud iam service-accounts keys create "${SERVICE_ACCOUNT}-${1}.key" \
+        --iam-account="${SERVICE_ACCOUNT}@${1}.iam.gserviceaccount.com"; then
       info "Successfully created service account key: ${SERVICE_ACCOUNT}"
     else
       err "Error: Failed to create service account key: ${SERVICE_ACCOUNT}."

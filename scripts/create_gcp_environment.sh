@@ -15,7 +15,6 @@ source "$(dirname "$0")/util.sh"
 #
 #   TIMESTAMP - Unique timestamp to append to the project name
 #   APIS - APIs to enable within the project
-#   SERVICE_ACCOUNTS - Service accounts to create within the project
 
 TIMESTAMP="$(date +%s)"
 
@@ -26,13 +25,6 @@ TIMESTAMP="$(date +%s)"
 #   dns.googleapis.com - Cloud DNS
 #   firebase.googleapis.com - Firebase
 #   iam.googleapis.com - Identity and Access Management
-
-
-# Service Accounts
-#
-#   terraform - Service account for Terraform
-
-SERVICE_ACCOUNTS="terraform"
 
 # APIs to enable
 #
