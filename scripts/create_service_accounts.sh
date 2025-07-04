@@ -83,7 +83,7 @@ create_service_accounts() {
   do
     info "Creating service accounts: ${SERVICE_ACCOUNT}-${1}.key"
 
-    if gcloud iam service-accounts list --filter="email=${SERVICE_ACCOUNT}@${1}.iam.gserviceaccount.com" --format="value(email)" | grep -q "${SERVICE_ACCOUNT}@${project_id}.iam.gserviceaccount.com"; then
+    if gcloud iam service-accounts list --filter="email=${SERVICE_ACCOUNT}@${1}.iam.gserviceaccount.com" --format="value(email)" | grep -q "${SERVICE_ACCOUNT}@${1}.iam.gserviceaccount.com"; then
       info "Service account already exists: ${SERVICE_ACCOUNT}"
     else
       if gcloud iam service-accounts create "${SERVICE_ACCOUNT}"; then
